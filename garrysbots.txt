@@ -1,0 +1,8 @@
+"Gamemode"
+{
+	"base"		"base"
+	"title"		"Garry's Bots"
+	"maps"		"^gb_"
+	"menusystem"	"1"
+
+}

@@ -1,0 +1,26 @@
+::::::::::::::::::::::::::::::::::::
+
+Version number:
+	0.0.0a
+	^ Release Version
+	  ^ Major update number
+	    ^ Minor update number
+	     ^ State of release (a = alpha, b = beta, rt = release test, r = release (gamemode is basically done))
+
+Latest SVN rev:
+	--
+::::::::::::::::::::::::::::::::::::
+
+Version 0.0.4a
+	-Changed Post Game Report FONT2 to use a better font.
+
+Version 0.0.3a
+	-Fixed timer in gb_core
+	-Added check to see if there's more then 1 player, if there isn't then return.
+
+Version 0.0.2a
+	-Fixed weight tool
+
+Version 0.0.1a
+	-Fixed scoreboard
+	-Fixed some other stuff that I don't remember.
