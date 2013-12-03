@@ -12,5 +12,5 @@ Most of the gamemode as been converted to work with Garry's Mod 13 but there's a
 </ul>
 
 <h2>Extra Info</h2>
-If you use this gamemode please keep all the people in the credits. If you want to help out or add something to the source then just do a pull request. I'll continue to work on this gamemode until it's bug free, and I plan on updating the gamemode if any Garry's Mod updates break it.
+If you use this gamemode please keep all the people in the credits. If you want to help out or add something to the source then just do a pull request.
 
