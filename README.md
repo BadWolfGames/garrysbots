@@ -2,7 +2,7 @@ garrysbots
 ==========
 
 <h2>Description</h2>
-There's two teams, the Red team and the Blue team. The people on the teams build robots within the time limit with a core. Then after that time is up then the robots are sent into the arena to fight each other. After all of the cores but one have been destroyed then the round is yp and that player with the surviving core wins.
+There's two teams, the Red team and the Blue team. The people on the teams build robots within the time limit with a core. Then after that time is up then the robots are sent into the arena to fight each other. After all of the cores but one have been destroyed then the round is up and that player with the surviving core wins.
 
 <h2>Bugs</h2>
 Most of the gamemode as been converted to work with Garry's Mod 13 but there's a few bugs that are known.
