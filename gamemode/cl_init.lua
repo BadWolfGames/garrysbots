@@ -1,7 +1,7 @@
 include( "defines.lua" )
 include( "config.lua" )
 include( "shared.lua" )
-include( "cl_umsg.lua" )
+include( "cl_netmsgs.lua" )
 include( "cl_hud.lua" )
 include( "cl_gui.lua" )
 include( "cl_spawnmenu.lua" )

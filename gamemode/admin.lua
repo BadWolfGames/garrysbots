@@ -10,6 +10,7 @@ function FindPly(name)
 			return ply
 		end
 	end
+
 	return nil
 end
 
@@ -29,6 +30,7 @@ function Admin_Announce(ply, cmd, args)
 			for i=2, #args do
 				table.insert(msgs, args[i])
 			end
+			
 			Announcement(msgs, args[1])
 		else
 			ply:PrintMessage(HUD_PRINTTALK, "Incorrect syntax!\n")

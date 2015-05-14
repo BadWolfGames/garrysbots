@@ -1,6 +1,3 @@
-//----------------------------------------HUD
-//surface.CreateFont("coolvetica", 28, 500, true, false, "HUD_Font")
-
 surface.CreateFont("HUD_Font", {
 	font = "coolvetica",
 	size = 28,
@@ -31,7 +28,6 @@ function DrawHUD()
 
 	local FADE_RATE = 0.5
 	local FADE_ACCURACY = 40
-
 
 	//bar background
 	draw.RoundedBox( 0, 0, 0, ScrW()/2 - SCORE_BOX_WIDTH/2, TOP_BAR_SIZE, TOP_BAR_COLOR );
@@ -87,6 +83,7 @@ function DrawHUD()
 	else
 		round = "Post Game"
 	end
+
 	local spacing = (ScrW()-4) / 5
 	draw.DrawText( "Core Health: "..LocalPlayer():GetVar("gb_corehealth", 0), TOP_BAR_FONT, 2 + (spacing * 0), 2, TOP_BAR_TEXT_COLOR)
 	draw.DrawText( "Time Left: "..string.FormattedTime( gb_RoundTimer, "%02i:%02i"), TOP_BAR_FONT, 2 + (spacing * 0.7), 2, TOP_BAR_TEXT_COLOR)
@@ -101,27 +98,30 @@ function DrawHUD()
 	//Draw the fuxoring melon owner names.
 	for k, v in pairs(player.GetAll()) do
 		local melon = v:GetNetworkedEntity("gb_core").DamageProp
-		if (melon && melon:IsValid()) then
 
-		local alpha = 0
-		local position = melon:GetPos()
-		local position = Vector(position.x, position.y, position.z + 30)
-		local screenpos = position:ToScreen()
-		local dist = position:Distance(LocalPlayer():GetPos())
-		local dist = dist / 4
-		local dist = math.floor(dist)
-		if(dist > 100) then
-			alpha = 255 - (dist - 100)
-		else
-			alpha = 255
-		end
-		if(alpha > 255) then
-			alpha = 255
-		elseif(alpha < 0) then
-			alpha = 0
-		end
-		draw.DrawText( v:Nick(), "DefaultSmall", screenpos.x, screenpos.y, Color(255, 255, 255, alpha), 1)
-		draw.DrawText( v:GetVar("gb_corehealth", 0), "DefaultSmall", screenpos.x, screenpos.y + 10, Color(255, 255, 255, alpha), 1)
+		if (melon && melon:IsValid()) then
+			local alpha = 0
+			local position = melon:GetPos()
+			local position = Vector(position.x, position.y, position.z + 30)
+			local screenpos = position:ToScreen()
+			local dist = position:Distance(LocalPlayer():GetPos())
+			local dist = dist / 4
+			local dist = math.floor(dist)
+
+			if(dist > 100) then
+				alpha = 255 - (dist - 100)
+			else
+				alpha = 255
+			end
+
+			if(alpha > 255) then
+				alpha = 255
+			elseif(alpha < 0) then
+				alpha = 0
+			end
+
+			draw.DrawText( v:Nick(), "DefaultSmall", screenpos.x, screenpos.y, Color(255, 255, 255, alpha), 1)
+			draw.DrawText( v:GetVar("gb_corehealth", 0), "DefaultSmall", screenpos.x, screenpos.y + 10, Color(255, 255, 255, alpha), 1)
 		end
 	end
 end
@@ -131,8 +131,9 @@ function HideHud(name)
 	for k, v in pairs{"CHudHealth", "CHudBattery", "CHudAmmo", "CHudSecondaryAmmo"} do          
 		if name == v then 
 			return false      
-		end        
-	return true   
+		end
+
+		return true   
 	end  
 end
 hook.Add("HUDShouldDraw", "Hide HUD Components", HideHud)

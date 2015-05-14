@@ -1,7 +1,9 @@
 function GM:AddGamemodeToolMenuCategories()
 	spawnmenu.AddToolCategory( "Main", "Construction", "#Construction" )
 	spawnmenu.AddToolCategory( "Main", "Garry's Bots", "#Garry's Bots" )
+
 	local baseAddToolCategory = spawnmenu.AddToolCategory
+	
 	function spawnmenu.AddToolCategory( tab, RealName, PrintName )
 		if (tab == "Main") then return end
 		baseAddToolCategory( tab, RealName, PrintName )

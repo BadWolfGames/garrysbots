@@ -1,29 +1,21 @@
-// sh_func.lua
+// sv_funcs.lua
 // Houses the most important functions server-side
 
 function Announcement(text, time, player)
-	local rf = RecipientFilter()
-	rf:AddAllPlayers()
-	rf = player or rf
+	net.Start("gb_announcement")
+		net.WriteUInt(time, 32)
+		net.WriteUInt(table.getn(text), 32)
 
-	umsg.Start("Announcement", rf)
-		umsg.Long(time)
-		umsg.Long(table.getn(text))
-		for k, v in pairs(text) do
-			umsg.String(v)
+		for k,v in pairs(text) do
+			net.WriteString(v)
 		end
-	umsg.End()
+	net.Broadcast()
 end
 
 function SyncTime()
-	local rf = RecipientFilter()
-	rf:AddAllPlayers()
-
-	umsg.Start("timercountdown", rf)
-		umsg.Long(gb_RoundTimer)
-	umsg.End()
-
-	//im planning on adding more to this...
+	net.Start("gb_timercountdown")
+		net.WriteUInt(gb_RoundTimer, 32)
+	net.Broadcast()
 end
 
 function SurvivalTime()
@@ -37,12 +29,9 @@ end
 function ChangeRound(round)
 	gb_CurrentRound = round
 
-	local rf = RecipientFilter()
-	rf:AddAllPlayers()
-
-	umsg.Start("changeround", rf)
-		umsg.Long(round)
-	umsg.End()
+	net.Start("gb_changeround")
+		net.WriteUInt(round, 32)
+	net.Broadcast()
 
 	SyncTime()
 end
@@ -79,29 +68,37 @@ function StartFight()
 
 	for k, v in pairs(allplayers) do
 		local core = v:GetNetworkedEntity("gb_core")
+
 		if(core:IsValid()) then
 			if (#robotspawns <= 0) then break end //no more spawns...
+
 			local randomspawn = math.random(#robotspawns)
 			local spawnent = table.remove(robotspawns, randomspawn)
 			local spawnpos = spawnent:GetPos()
 			local corepos = core:GetPos()
 			local const = constraint.GetAllConstrainedEntities(core:GetTable().DamageProp)
+
 			for _, Ent in pairs(const) do
 				local phys1 = Ent:GetPhysicsObject()
+
 				if phys1 and phys1:IsValid() then
 					phys1:EnableMotion( true )
 					phys1:Wake()
 					phys1:ApplyForceCenter( Vector( 0, 0, -1) )
 				end
+
 				Ent:SetPos((Ent:GetPos() - corepos + spawnpos))
 			end
+
 			core:GetTable().DamageProp:SetPos(spawnent:GetPos())
+
 			local phys = core:GetTable().DamageProp:GetPhysicsObject()
 			if phys and phys:IsValid() then
 				phys:EnableMotion( true )
 				phys:Wake()
 				phys:ApplyForceCenter( Vector( 0, 0, -1) )
 			end
+
 			table.remove(robotspawns, randomspawn)
 		end
 	end
@@ -131,11 +128,13 @@ function VoteSkip( ply, command, args )
 
 	if !table.HasValue(VoteSkipInfo, ply) then
 		table.insert(VoteSkipInfo, ply)
+
 		for k, v in pairs(VoteSkipInfo) do
 			if !v:IsPlayer() then
 				VoteSkipInfo[k] = nil
 			end
 		end
+
 		local percent = table.getn(VoteSkipInfo) / table.getn(player.GetAll())
 		local required = math.ceil(gb_VoteSkipPercent * table.getn(player.GetAll()))
 		local remaining = required - table.getn(VoteSkipInfo)
@@ -216,13 +215,16 @@ function GameOver(winteam)
 	local new_healths = {}
 	for i=1, table.getn(healths) do
 		local longest = {0,0,0}
+
 		for k, v in pairs(healths) do
 			if (v[2] > longest[2] || longest[1] == 0) then
 				longest = {v[1], v[2], k}
 			end
 		end
+
 		//if (longest[2] != 0) then
-			table.insert(new_healths, {longest[1], longest[2]})
+		table.insert(new_healths, {longest[1], longest[2]})
+
 		//end
 		table.remove(healths, longest[3])
 	end
@@ -242,13 +244,16 @@ function GameOver(winteam)
 	local new_damages = {}
 	for i=1, table.getn(damages) do
 		local longest = {0,0,0}
+
 		for k, v in pairs(damages) do
 			if (v[2] > longest[2] || longest[1] == 0) then
 				longest = {v[1], v[2], k}
 			end
 		end
+
 		//if (longest[2] != 0) then
-			table.insert(new_damages, {longest[1], longest[2]})
+		table.insert(new_damages, {longest[1], longest[2]})
+
 		//end
 		table.remove(damages, longest[3])
 	end
@@ -263,30 +268,31 @@ function GameOver(winteam)
 		wincolor = Color(128, 128, 128, 255)
 	end
 
-	local rf = RecipientFilter()
-	rf:AddAllPlayers()
-
-	umsg.Start("PostGame", rf)
-		umsg.Short(time_count)
+	net.Start("gb_postgame")
+		//time
+		net.WriteUInt(timer_count, 16)
 		for i=1, time_count do
-			umsg.Entity(new_times[i][1])
-			umsg.Short(new_times[i][2])
+			net.WriteEntity(new_times[i][1])
+			net.WriteUInt(new_times[i][2], 16)
 		end
-		umsg.Short(health_count)
+
+		//health
+		net.WriteUInt(health_count)
 		for i=1, health_count do
-			umsg.Entity(new_healths[i][1])
-			umsg.Short(new_healths[i][2])
+			net.WriteEntity(new_healths[i][1])
+			net.WriteUInt(new_healths[i][2], 16)
 		end
-		umsg.Short(damage_count)
+
+		//damage
+		net.WriteUInt(damage_count)
 		for i=1, damage_count do
-			umsg.Entity(new_damages[i][1])
-			umsg.Short(new_damages[i][2])
+			net.WriteEntity(new_damages[i][1])
+			net.WriteUInt(new_damages[i][2], 16)
 		end
-		umsg.Short(wincolor.r)
-		umsg.Short(wincolor.g)
-		umsg.Short(wincolor.b)
-		umsg.String(winmsg)
-	umsg.End()
+
+		net.WriteColor(wincolor.r, wincolor.g, wincolor.b, 255)
+		net.WriteString(winmsg)
+	net.Broadcast()
 
 	timer.Simple(gb_PostGameTime, Changethemap)
 	timer.Remove("RoundTimer")
@@ -321,6 +327,7 @@ function TimerCountdown()
 		elseif gb_RoundTimer == 1 then
 			Announcement({"1..."}, 2)
 		end
+
 	elseif gb_CurrentRound == 2 then
 		if gb_RoundTimer == 10*60 then
 			Announcement({"Ten minutes remaining."}, 5)

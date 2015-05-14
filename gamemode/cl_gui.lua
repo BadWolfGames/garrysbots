@@ -427,22 +427,11 @@ end
 vgui.Register( "MenuButton", BUTTON, "Button" )
 
 local BUTTON2 = {}
-
 function BUTTON2:DoClick()
 	surface.PlaySound( "ui/buttonclick.wav" )
 	self.Parent.open = false
 
 	if (self.Parent.Accept:GetValue() == "0") then
-		LocalPlayer():ConCommand("say LOL I DIDN'T READ THE MOTD LOL\n")
-		LocalPlayer():ConCommand("wait\nwait\nwait\nwait\nwait\nwait\n")//the command has to reach the server
-		LocalPlayer():ConCommand("wait\nwait\nwait\nwait\nwait\nwait\n")
-		LocalPlayer():ConCommand("wait\nwait\nwait\nwait\nwait\nwait\n")
-		LocalPlayer():ConCommand("wait\nwait\nwait\nwait\nwait\nwait\n")
-		LocalPlayer():ConCommand("wait\nwait\nwait\nwait\nwait\nwait\n")
-		LocalPlayer():ConCommand("wait\nwait\nwait\nwait\nwait\nwait\n")
-		LocalPlayer():ConCommand("wait\nwait\nwait\nwait\nwait\nwait\n")
-		LocalPlayer():ConCommand("wait\nwait\nwait\nwait\nwait\nwait\n")
-		LocalPlayer():ConCommand("wait\nwait\nwait\nwait\nwait\nwait\n")
 		LocalPlayer():ConCommand("echo Read the damn MOTD next time.\n")
 		LocalPlayer():ConCommand("disconnect\n")
 		return
@@ -453,7 +442,6 @@ end
 vgui.Register( "CloseButton", BUTTON2, "MenuButton" ) //motd close button, dont use it for ANYTHING else
 
 local TITLELABEL = {}
-
 function TITLELABEL:Init()
 	self.CORNER_SIZE = 10
 
@@ -498,85 +486,84 @@ function AllMenusClosed()
 	return (!F1Menu.open && !F2Menu.open && !F3Menu.open && !F4Menu.open)
 end
 
-function ShowF1Menu( um )
+concommand.Add("gb_openf1", function()
 	if GAMEMODE.ShowScoreboard then return end
 
 	F1Menu.open = !F1Menu.open
-	gui.EnableScreenClicker( !AllMenusClosed() )
-end
-usermessage.Hook("ShowF1Menu", ShowF1Menu)
+	gui.EnableScreenClicker(!AllMenusClosed())
+end)
 
-function ShowF2Menu( um )
+concommand.Add("gb_openf2", function()
 	if GAMEMODE.ShowScoreboard then return end
 
 	F2Menu.open = !F2Menu.open
-	gui.EnableScreenClicker( !AllMenusClosed() )
-end
-usermessage.Hook("ShowF2Menu", ShowF2Menu)
+	gui.EnableScreenClicker(!AllMenusClosed())
+end)
 
-function ShowF3Menu( um )
+concommand.Add("gb_openf3", function()
 	if GAMEMODE.ShowScoreboard then return end
 
 	F3Menu.open = !F3Menu.open
-	gui.EnableScreenClicker( !AllMenusClosed() )
-end
-usermessage.Hook("ShowF3Menu", ShowF3Menu)
+	gui.EnableScreenClicker(!AllMenusClosed())
+end)
 
-function ShowF4Menu( um )
+concommand.Add("gb_openf4", function()
 	if GAMEMODE.ShowScoreboard then return end
 
 	F4Menu.open = !F4Menu.open
-	gui.EnableScreenClicker( !AllMenusClosed() )
-end
-usermessage.Hook("ShowF4Menu", ShowF4Menu)
+	gui.EnableScreenClicker(!AllMenusClosed())
+end)
 
-function ShowMOTD( um )
-	MOTDWindow.open = true
-end
-usermessage.Hook("ShowMOTD", ShowMOTD)
+concommand.Add("gb_openmotd", function()
+	MOTD.Window.open = true
+end)
 
-function Announcement( um )
-	AnnouncementWindow.time = um:ReadLong()
+net.Receive("gb_announcement", function()
+	local time = net.ReadUInt(32)
+	local count = net.ReadUInt(32)
+
+	AnnouncementWindow.time = net.ReadInt(8)
+
 	AnnouncementWindow.text = {}
-	for i=1, um:ReadLong() do
-		AnnouncementWindow.text[i] = um:ReadString()
+	for i=1, count do
+		AnnouncementWindow.text[i] = net.ReadString()
 	end
 
 	AnnouncementWindow:SetVisible(true)
 
 	timer.Destroy("Announcement Timer")
-	timer.Create("Announcement Timer", 1, AnnouncementWindow.time, function() 
-		AnnouncementWindow.Timer(AnnouncementWindow) end )
+	timer.Create("Announcement Timer", 1, AnnouncementWindow.time, function()
+		AnnouncementWindow.Timer(AnnouncementWindow)
+	end)
 
+	surface.PlaySound("ui/buttonclick.wav")
+end)
 
-	surface.PlaySound( "ui/buttonclick.wav" )
-end
-usermessage.Hook("Announcement", Announcement)
-
-function PostGame( um )
-	for i=1, um:ReadShort() do
+net.Receive("gb_postgame", function()
+	//times
+	for i=1, net.ReadUInt(16) do
 		PostGameWindow.Times[i] = {}
-		PostGameWindow.Times[i][1] = um:ReadEntity()
-		PostGameWindow.Times[i][2] = um:ReadShort()
+		PostGameWindow.Times[i][1] = net.ReadEntity()
+		PostGameWindow.Times[i][2] = net.ReadUInt(16)
 	end
 
-	for i=1, um:ReadShort() do
+	//healths
+	for i=1, net.ReadUInt(16) do
 		PostGameWindow.Healths[i] = {}
-		PostGameWindow.Healths[i][1] = um:ReadEntity()
-		PostGameWindow.Healths[i][2] = um:ReadShort()
+		PostGameWindow.Healths[i][1] = net.ReadEntity()
+		PostGameWindow.Healths[i][2] = net.ReadUInt(16)
 	end
 
-	for i=1, um:ReadShort() do
+	//damages
+	for i=1, net.ReadUInt(16) do
 		PostGameWindow.Damages[i] = {}
-		PostGameWindow.Damages[i][1] = um:ReadEntity()
-		PostGameWindow.Damages[i][2] = um:ReadShort()
+		PostGameWindow.Damages[i][1] = net.ReadEntity()
+		PostGameWindow.Damages[i][2] = net.ReadUInt(16)
 	end
 
-	PostGameWindow.WinColor = Color(um:ReadShort(),um:ReadShort(),um:ReadShort(),255)
-	PostGameWindow.WinText = um:ReadString()
+	PostGameWindow.WinColor = net.ReadColor()
+	PostGameWindow.WinText = net.ReadString()
 
 	PostGameWindow:LoadData()
-
 	PostGameWindow:SetVisible(true)
-end
-usermessage.Hook("PostGame", PostGame)
+end)

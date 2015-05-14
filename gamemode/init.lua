@@ -6,7 +6,7 @@ AddCSLuaFile( "defines.lua" )
 AddCSLuaFile( "config.lua" )
 AddCSLuaFile( "shared.lua" )
 AddCSLuaFile( "cl_init.lua" )
-AddCSLuaFile( "cl_umsg.lua" )
+AddCSLuaFile( "cl_netmsgs.lua" )
 AddCSLuaFile( "cl_hud.lua" )
 AddCSLuaFile( "cl_gui.lua" )
 AddCSLuaFile( "cl_spawnmenu.lua" )
@@ -14,16 +14,18 @@ AddCSLuaFile( "sh_scoreboard.lua" )
 include( "defines.lua" )
 include( "config.lua" )
 include( "shared.lua" )
-include( "game_func.lua" )
+include( "sv_funcs.lua" )
 include( "sh_scoreboard.lua" )
 include( "admin.lua" )
 
 function KeyPressed (ply, key)
 	local healthobjs = {"prop_physics"}
+
 	if(key == 32) then
 		local traceres = ply:GetEyeTrace()
 		local ent = traceres.Entity
 		local healthobjs = {"prop_physics"}
+
 		if (!ent:IsValid() || ent:IsWorld() || ent:IsPlayer() || !table.HasValue( healthobjs, ent:GetClass())) then
 			return
 		else
@@ -113,20 +115,17 @@ function PropCheck( player, model )
 
 	for k, v in pairs(gb_BannedProps) do
 		if string.gsub(string.gsub(model, "/", ""), "\\", "") == string.gsub(string.gsub(v, "/", ""), "\\", "") then
-			//player:ChatPrint("That prop is banned.")
 			player:ChatPrint("That prop is not allowed.")
 			return false
 		end
 	end
 
 	if size > gb_MaxPropSize then
-		//player:ChatPrint("That prop is too big.")
 		player:ChatPrint("That prop is not allowed.")
 		return false
 	end
 
 	if propmass > gb_MaxPropMass then
-		//player:ChatPrint("That prop is too heavy.")
 		player:ChatPrint("That prop is not allowed.")
 		return false
 	end
@@ -138,6 +137,7 @@ hook.Add("PlayerSpawnProp", "Prop Check", PropCheck)
 function ToggleCamera(ply, cmd, args)
 	local spectating = ply:GetNetworkedBool("spectating")
 	local cam = ply:GetNetworkedEntity("gb_cam")
+
 	if(spectating) then
 		if(gb_CurrentRound == 1) then
 			ply:UnSpectate()
@@ -151,6 +151,7 @@ function ToggleCamera(ply, cmd, args)
 			ply:SetNetworkedBool("spectating", false)
 		end
 		ply:SetEyeAngles(Angle(ply:EyeAngles().p, ply:EyeAngles().y, 0))
+
 	elseif(!spectating) then
 		if(cam:IsValid()) then
 			ply:UnSpectate()
@@ -180,6 +181,7 @@ function ChangeTeam(ply, cmd, args)
 			ply:SetTeam( 2 )
 		end
 		return
+
 	elseif (team.NumPlayers(1) < team.NumPlayers(2)) then
 		if args[1] == "red" then
 			RemoveRobot(ply)
@@ -187,6 +189,7 @@ function ChangeTeam(ply, cmd, args)
 			ply:SetTeam( 1 )
 			return
 		end
+
 	elseif (team.NumPlayers(1) > team.NumPlayers(2)) then
 		if args[1] == "blue" then
 			RemoveRobot(ply)
@@ -195,6 +198,7 @@ function ChangeTeam(ply, cmd, args)
 			return
 		end
 	end
+
 	ply:ChatPrint("There are too many players on that team.")
 end
 concommand.Add("gb_changeteam", ChangeTeam)
@@ -204,11 +208,12 @@ function Kaboom()
 	if table.getn(KaboomTable) == 0 then return end //nothing to blow up
 	local ent = KaboomTable[1]
 	table.remove(KaboomTable, 1)
+
 	if (ent != nil && ent:IsValid()) then
-		//MsgAll("                                   kaboom ran with valid ent\n")
+		//MsgAll("kaboom ran with valid ent\n")
 		DestroyProp(ent)
 	else
-		//MsgAll("                                   kaboom ran with invalid ent\n")
+		//MsgAll("kaboom ran with invalid ent\n")
 		Kaboom()
 	end
 end
@@ -216,6 +221,7 @@ timer.Create("kaboom", 0.1, 0, Kaboom)
 
 function DestroyProp(ent)
 	local vPoint = ent:GetPos()
+
 	local effectdata = EffectData()
 	effectdata:SetStart( vPoint )
 	effectdata:SetOrigin( vPoint )
@@ -233,7 +239,7 @@ function RemoveRobot( player )
 end
 
 function DestroyRobot(player)
-	//MsgAll("                      destroy robot called\n")
+	//MsgAll("destroy robot called\n")
 	if player:GetNetworkedEntity("gb_core"):IsValid() then
 		player:GetNetworkedEntity("gb_core"):GetTable():DestroyEffects()
 	end
@@ -241,10 +247,11 @@ function DestroyRobot(player)
 	local RemoveMe = {"gb_cam", "gmod_thruster", "gmod_wheel", "prop_physics"} //delete all of these
 	for k, TypeToRemove in pairs(RemoveMe) do
 		local playerents = ents.FindByClass(TypeToRemove)
+
 		for k, ent in pairs(playerents) do
 			if ent:IsValid() then
 				if (ent:GetVar( "Founder", "nothing" ) == player && !ent:GetVar("DamageModel")) then
-					//MsgAll("                                    destroy robot added: "..tostring(ent).."\n")
+					//MsgAll("destroy robot added: "..tostring(ent).."\n")
 					table.insert( KaboomTable, ent )
 				end
 			end
@@ -253,11 +260,12 @@ function DestroyRobot(player)
 end
 
 function PlayerForfeit( player, command, arguments )
-	//MsgAll("                                           forfeit called\n")
+	//MsgAll("forfeit called\n")
 	if gb_CurrentRound == 1 then
 		player:ChatPrint("You can only forfeit during the fight.")
 		return
 	end
+
 	DestroyRobot(player)
 end
 concommand.Add("gb_forfeit", PlayerForfeit)
@@ -269,40 +277,30 @@ end
 function GM:ShowHelp( ply )
 end
 
-function ShowF1Menu( player )
-	umsg.Start("ShowF1Menu", player)
-	umsg.End()
-end
-hook.Add("ShowHelp", "F1Menu", ShowF1Menu)  
+hook.Add("ShowHelp", "gb_F1Menu", function(ply)
+	ply:ConCommand("gb_openf1")
+end)
 
-function ShowF2Menu( player )
-	umsg.Start("ShowF2Menu", player)
-	umsg.End()
-end
-hook.Add("ShowTeam", "F2Menu", ShowF2Menu)  
+hook.Add("ShowTeam", "gb_F2Menu", function(ply)
+	ply:ConCommand("gb_openf2")
+end)
 
-function ShowF3Menu( player )
-	umsg.Start("ShowF3Menu", player)
-	umsg.End()
-end
-hook.Add("ShowSpare1", "F3Menu", ShowF3Menu)
+hook.Add("ShowSpare1", "gb_F3Menu", function(ply)
+	ply:ConCommand("gb_openf3")
+end)
 
-function ShowF4Menu( player )
-	umsg.Start("ShowF4Menu", player)
-	umsg.End()
-end
-hook.Add("ShowSpare2", "F4Menu", ShowF4Menu)
+hook.Add("ShowSpare2", "gb_F4Menu", function(ply)
+	ply:ConCommand("gb_openf4")
+end)
 
-function ShowMOTD( player, text )
-	if (string.lower(text) == "!motd") then
-		umsg.Start("ShowMOTD", player)
-		umsg.End()
+hook.Add("PlayerSay", "gb_MOTDCmd", function(ply, text)
+	if string.lower(text) == "!motd" then
+		ply:ConCommand("gb_openmotd")
 	end
-end
-hook.Add("PlayerSay", "ShowMOTD", ShowMOTD)
+end)
 
 function GM:CanTool( pl, tr, toolmode )
-	//MsgAll("                  toolmode: "..tostring(toolmode).."\n")
+	//MsgAll("toolmode: "..tostring(toolmode).."\n")
 	if !table.HasValue( AllowableTools, toolmode ) then
 		pl:PrintMessage(HUD_PRINTTALK, "That tool is not allowed.")
 		return false
@@ -332,8 +330,10 @@ function GM:PlayerInitialSpawn( ply )
 
 	if (team.NumPlayers(2) > team.NumPlayers(1)) then
 		ply:SetTeam( 1 )
+
 	elseif (team.NumPlayers(2) < team.NumPlayers(1)) then
 		ply:SetTeam( 2 )
+
 	else
 		ply:SetTeam( math.random(1,2) )
 	end
@@ -345,18 +345,18 @@ function GM:PlayerInitialSpawn( ply )
 
 	ply:SetVar("DamageDelt", 0)
 
-	umsg.Start("timercountdown", ply)
-		umsg.Long(gb_RoundTimer)
-	umsg.End()
+	net.Start("gb_timercountdown")
+		net.WriteInt(gb_RoundTimer, 32)
+	net.Send(ply)
 
-	umsg.Start("changeround", ply)
-		umsg.Long(gb_CurrentRound)
-	umsg.End()
+	net.Start("gb_changeround")
+		net.WriteInt(gb_CurrentRound, 32)
+	net.Send(ply)
 
-	umsg.Start("updateteamcores", ply)
-		umsg.Long(gb_NumRedCores)
-		umsg.Long(gb_NumBlueCores)
-	umsg.End()
+	net.Start("gb_updateteamcores")
+		net.WriteInt(gb_NumRedCores, 32)
+		net.WriteInt(gb_NumBlueCores, 32)
+	net.Send(ply)
 end
 
 function GM:PlayerSpawn( ply )
@@ -376,13 +376,13 @@ function GM:PlayerSpawn( ply )
 	end
 end
 
-function GM:PlayerSelectSpawn(pl)
-	if pl:Team() == 2 then
+function GM:PlayerSelectSpawn(ply)
+	if ply:Team() == 2 then
 		spawns = ents.FindByClass( "info_player_blue" )
 		local randomspawn = math.random(#spawns)
 		return spawns[randomspawn]
 	
-	elseif pl:Team() == 1 then
+	elseif ply:Team() == 1 then
 		spawns = ents.FindByClass( "info_player_red" )
 		local randomspawn = math.random(#spawns)
 		return spawns[randomspawn]
@@ -417,10 +417,12 @@ end
 
 function SetPropHealth(prop, amount)
 	local physob = prop:GetPhysicsObject()
+
 	if physob then
 		local propmass = physob:GetMass()
 		local min,max = prop:WorldSpaceAABB()
 		local size = min:Distance(max)
+
 		if gb_PropHealthMethod == 1 then
 			prop.aHealth = amount or gb_FixedPropHealth
 		elseif gb_PropHealthMethod == 2 then
@@ -432,6 +434,7 @@ function SetPropHealth(prop, amount)
 		if (!amount && prop.aHealth > gb_PropMaxHealth) then
 			prop.aHealth = gb_PropMaxHealth
 		end
+
 		prop:Fire("physdamagescale", tostring(gb_PropDamageScale))
 	end
 end
@@ -440,11 +443,13 @@ end
 local baseRemoveAllConstraints = constraint.RemoveAll
 function constraint.RemoveAll(ent)
 	local constraints = constraint.FindConstraints( ent, "Motor" )
+
 	for k, const in pairs(constraints) do
 		if const.axis then
 			const.axis:Remove()
 		end
 	end
+
 	baseRemoveAllConstraints(ent)
 end
 
@@ -453,12 +458,14 @@ local baseRemoveConstraints = constraint.RemoveConstraints
 function constraint.RemoveConstraints( ent, type )
 	if (string.lower(type) == "motor") then
 		local constraints = constraint.FindConstraints( ent, "Motor" )
+
 		for k, const in pairs(constraints) do
 			if const.axis then
 				const.axis:Remove()
 			end
 		end
 	end
+
 	baseRemoveConstraints(ent, type)
 end
 
@@ -518,7 +525,6 @@ end
 
 function GM:PhysgunPickup(ply, ent)
 	if (ent:GetClass() == "gb_core" || !ent:IsValid() || ent:IsWorld()) then return end
-
 	if (ent:IsPlayer() && !ply:IsAdmin()) then return end
 
 	if (!ent:GetVar( "Founder", "nothing" )) then //unowned
@@ -528,6 +534,7 @@ function GM:PhysgunPickup(ply, ent)
 	if (ent:GetVar( "Founder", "nothing" ) == ply || ply:IsAdmin()) then
 		return true
 	end
+
 	return false
 end
 
@@ -535,6 +542,7 @@ function GetPropHealth(ply, cmd, args)
 	local traceres = ply:GetEyeTrace()
 	local ent = traceres.Entity
 	local healthobjs = {"prop_physics"}
+
 	if (!ent:IsValid() || ent:IsWorld() || ent:IsPlayer() || !table.HasValue( healthobjs, ent:GetClass())) then
 		ply:PrintMessage(HUD_PRINTTALK, "You must be looking at a prop to do this!")
 	else
