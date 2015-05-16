@@ -1,6 +1,7 @@
-AddCSLuaFile( "cl_init.lua" )
-AddCSLuaFile( "shared.lua" )
-include('shared.lua')
+print("*****INIT LOADED FOR CORE*****")
+AddCSLuaFile("cl_init.lua")
+AddCSLuaFile("shared.lua")
+include("shared.lua")
 
 function ENT:UpdateCoreHealth()
 	if (self.Owner && self.Owner:IsValid()) then
@@ -14,25 +15,28 @@ end
 local function UpdateTeamCores_Server(red, blue) //used to give an instant reaction
 	gb_NumRedCores = red
 	gb_NumBlueCores = blue
+
 	CheckCores()
-	local rf = RecipientFilter()
-	rf:AddAllPlayers()
-	umsg.Start("updateteamcores", rf)
-		umsg.Long(red)
-		umsg.Long(blue)
-	umsg.End()
+
+	net.Start("gb_updateteamcores")
+		net.WriteInt(red, 32)
+		net.WriteInt(blue, 32)
+	net.Broadcast()
 end
 
 function ENT:CheckFlip()
 	local ang = self.Entity:GetUp():Angle()
+
 	if ang.p < 270	then
 		return true
 	end
+
 	return false
 end
 
 function ENT:SpawnFunction( ply, tr )
 	if ( !tr.Hit ) then return end
+
 	if (ply:GetNetworkedEntity("gb_core"):IsValid()) then
 		ply:PrintMessage(HUD_PRINTTALK, "You already have a core!")
 		return 
@@ -55,6 +59,7 @@ function ENT:SpawnFunction( ply, tr )
 	local ownerteam = ply:Team()
 	if (ownerteam == 1) then
 		UpdateTeamCores_Server(gb_NumRedCores + 1, gb_NumBlueCores)
+
 	elseif (ownerteam == 2) then
 		UpdateTeamCores_Server(gb_NumRedCores, gb_NumBlueCores + 1)
 	end
@@ -69,16 +74,16 @@ function ENT:Initialize()
 	self.Entity:SetSolid(SOLID_VPHYSICS)
 	self.Entity:SetCollisionGroup( COLLISION_GROUP_WORLD )
 	self.Entity.CollisionGroup = COLLISION_GROUP_WORLD
+
 	local phys = self.Entity:GetPhysicsObject()
 	if(phys:IsValid()) then
 		phys:Wake() 
 	end
+	
 	self.aHealth = gb_CoreHealth
-
 	self.Dead = false
 
 	self:MakeDamageProp()
-
 	self:UpdateCoreHealth()
 end
 
@@ -150,6 +155,7 @@ function ENT:DestroyEffects()
 	timer.Simple(1, function()
 		self.DamageProp.EmitSound(self.DamageProp,"ambient/explosions/explode_1.wav", 500, 100)
 	end)
+
 	timer.Simple(1.01, function()
 		self.Entity.Remove(self.Entity)
 	end)

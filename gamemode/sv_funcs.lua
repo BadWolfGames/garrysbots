@@ -270,7 +270,7 @@ function GameOver(winteam)
 
 	net.Start("gb_postgame")
 		//time
-		net.WriteUInt(timer_count, 16)
+		net.WriteUInt(time_count, 16)
 		for i=1, time_count do
 			net.WriteEntity(new_times[i][1])
 			net.WriteUInt(new_times[i][2], 16)

@@ -1,3 +1,4 @@
+print("*****SHARED LOADED FOR CORE*****")
 ENT.Type = "anim"
 ENT.Base = "base_gmodentity"
 

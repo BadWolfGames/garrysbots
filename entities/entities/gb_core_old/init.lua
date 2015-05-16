@@ -74,11 +74,14 @@ function ENT:OnTakeDamage(dmg)
 		effectdata:SetStart( vPoint )
 		effectdata:SetOrigin( vPoint )
 		effectdata:SetScale( 2 )
+
 		util.Effect( "Explosion", effectdata )
 		util.Effect( "cball_explode", effectdata )
+		
 		self.Remove(self)
 		return
 	end
+
 	if (self.Entity:GetVar("Founder", "nothing" )) then
 		UpdateCoreHealth(self.Entity:GetVar( "Founder", "nothing" ), self.aHealth)
 	end
@@ -90,6 +93,7 @@ function ENT:OnRemove()
 		self.Entity:GetVar( "Founder", "nothing" ):PrintMessage(HUD_PRINTTALK, "Your core was destroyed!")
 		UpdateCoreHealth(self.Entity:GetVar( "Founder", "nothing" ), 0)
 		local ownerteam = self.Entity:GetVar( "Founder", "nothing" ):Team()
+
 		if(ownerteam == 1) then
 			UpdateTeamCores_Server(gb_NumRedCores - 1, gb_NumBlueCores)
 		elseif(ownerteam == 2) then
@@ -102,6 +106,7 @@ function ENT:OnRemove()
 	else
 		//MsgAll("                            Core destroyed, no owner, falling back\n")
 		local r,g,b,a = self.Entity:GetColor()
+
 		if r > b then
 			UpdateTeamCores_Server(gb_NumRedCores - 1, gb_NumBlueCores)
 		else
@@ -126,21 +131,23 @@ function checkFlip( ent, distance )
 		end
 	else
 		local ang = ent:GetUp():Angle()
+
 		if ang.p < 270	then
 			return true
 		end
 	end
-	return false
 
+	return false
 end
 
 function ENT:Think()
 	if(gb_CurrentRound == 2) then
 		if(checkFlip(self.Entity)) then
 			self.aHealth = self.aHealth - 1
-				if(not !self.Entity:GetVar("Founder", "nothing" )) then
-					UpdateCoreHealth(self.Entity:GetVar( "Founder", "nothing" ), self.aHealth)
-				end
+
+			if(not !self.Entity:GetVar("Founder", "nothing" )) then
+				UpdateCoreHealth(self.Entity:GetVar( "Founder", "nothing" ), self.aHealth)
+			end
 		end
 
 		if (self.aHealth <= 0) then

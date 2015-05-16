@@ -18,7 +18,13 @@ include( "sv_funcs.lua" )
 include( "sh_scoreboard.lua" )
 include( "admin.lua" )
 
-function KeyPressed (ply, key)
+util.AddNetworkString("gb_timercountdown")
+util.AddNetworkString("gb_changeround")
+util.AddNetworkString("gb_updateteamcores")
+util.AddNetworkString("gb_postgame")
+util.AddNetworkString("gb_announcement")
+
+function KeyPressed(ply, key)
 	local healthobjs = {"prop_physics"}
 
 	if(key == 32) then
@@ -35,7 +41,7 @@ function KeyPressed (ply, key)
 		return
 	end
 end
-hook.Add( "KeyPress", "KeyPressedHook", KeyPressed ) 
+hook.Add( "KeyPress", "KeyPressedHook", KeyPressed )
 
 function CCSpawnSWEP( player, command, arguments )
 	return

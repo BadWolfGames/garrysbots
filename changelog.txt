@@ -11,6 +11,13 @@ Latest SVN rev:
 	--
 ::::::::::::::::::::::::::::::::::::
 
+Version 0.0.5a
+	-Replaced all user messages with net messages.
+	-Organized the code - Some of the code should be more readable now.
+	-Made menus open with console commands instead of sending user messages to request.
+	-Renamed game_func.lua to sv_funcs.lua
+	-Replaced cl_umsg.lua with cl_netmsgs.lua
+
 Version 0.0.4a
 	-Changed Post Game Report FONT2 to use a better font.
 

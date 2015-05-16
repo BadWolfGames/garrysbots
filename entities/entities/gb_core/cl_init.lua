@@ -1,24 +1,5 @@
-include('shared.lua')
-
-/* DamageProp returns nil which is why the laser no show up? */
-/*function ENT:DrawTranslucent( bDontDrawModel )
-	if ( bDontDrawModel ) then return end
-
-	if (!self.DamageProp || !self.DamageProp:IsValid()) then
-		self.DamageProp = self.Entity:GetNetworkedEntity("DamageProp")
-		return
-	end
-
-	if !IsValid(self.DamageProp) then
-		print("I RETURN AN ERROR AT LINE 13 OF CL_INIT.LUA OF GB_CORE!")
-	end
-
-	-- local start = self.DamageProp:GetPos()
-	-- local endpos = start + (self.DamageProp:GetUp() * 20)
-
-	-- render.SetMaterial(Material( "cable/redlaser" ) )
-	-- render.DrawBeam(start, endpos, 12, 0, 10, Color(255, 255, 255, 255))
-end*/
+print("*****CL INIT LOADED FOR CORE*****")
+include("shared.lua")
 
 function ENT:Initialize()
 end
@@ -59,7 +40,7 @@ function ENT:Draw()
 			endpos = trace.HitPos
 		end
 
-		render.SetMaterial(Material( "cable/redlaser" ) )
+		render.SetMaterial(Material( "cable/redlaser" ))
 		render.DrawBeam(start, endpos, 12, 0, 10, Color(255, 255, 255, 255))
 	end
 end

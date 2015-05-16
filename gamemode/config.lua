@@ -2,7 +2,7 @@
 
 gb_sb_top = "Garry's Bots"
 gb_sb_middle = "Press F1 for the help menu."
-gb_sb_bottom = "Developed by LuaBanana and Craze, Maintained by BWG"
+gb_sb_bottom = "Developed by LuaBanana and Craze, maintained by BWG"
 
 gb_BuildTime = 900
 gb_FightTime = 300
@@ -76,12 +76,15 @@ AllowableTools = {
 	"winch",
 	"axis",
 	"rope",
-	"gbots_weight"}
+	"gbots_weight"
+}
 
 AllowableWorldTools = { //things that you can shoot the world with, needs to be in the other table too
-	"adv_duplicator"}
+	"adv_duplicator"
+}
 
-MOTDHTML = [[<html>
+MOTDHTML = [[
+<html>
 <body bgcolor=#dbdbdb>
 <div style="text-align: center;">
 <div style="width: 80%; margin: 0px auto; border: 10px solid #c9d6e4; background-color: #ededed; padding: 10px; font-size: 12px; font-family: Tahoma; margin-top: 30px; color: #818181; text-align: left;">
@@ -106,9 +109,11 @@ Refer to the gamemode help screen, press F1.<br><br>
 </div>
 
 </body>
-</html>]]
+</html>
+]]
 
-HelpMenuHTML = [[<html>
+HelpMenuHTML = [[
+<html>
 <body bgcolor=#dbdbdb>
 <div style="text-align: center;">
 <div style="width: 80%; margin: 0px auto; border: 10px solid #c9d6e4; background-color: #ededed; padding: 10px; font-size: 12px; font-family: Tahoma; margin-top: 30px; color: #818181; text-align: left;">
@@ -132,4 +137,5 @@ If you have any other questions, just ask around.<br><br>
 </div>
 </div>
 </body>
-</html>]]
+</html>
+]]
