@@ -7,7 +7,6 @@ There's two teams, the Red team and the Blue team. The people on the teams build
 <h2>Bugs</h2>
 Most of the gamemode as been converted to work with Garry's Mod 13 but there's a few bugs that are known.
 <ul>
-  <li>nil entity on server side once the round as ended? Not sure if this is fixed or not.</li>
   <li>Laser on the core doesn't show up</li>
 </ul>
 
