@@ -5,11 +5,17 @@ Version number:
 	^ Release Version
 	  ^ Major update number
 	    ^ Minor update number
-	     ^ State of release (a = alpha, b = beta, rt = release test, r = release (gamemode is basically done))
+	     ^ State of release (a = alpha, b = beta, rt = release test, r = release)
 
 Latest SVN rev:
 	--
 ::::::::::::::::::::::::::::::::::::
+
+Version 0.0.6a
+	-Fixed core laser
+	-Fixed annoucements
+	-Fixed some other stuff I don't remember.
+	-Organized some stuff
 
 Version 0.0.5a
 	-Replaced all user messages with net messages.

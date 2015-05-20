@@ -5,6 +5,7 @@ include('shared.lua')
 
 function ENT:SpawnFunction( ply, tr )
 	if( !tr.Hit ) then return end
+
 	if(ply:GetNetworkedEntity("gb_cam"):IsValid()) then
 		ply:PrintMessage(HUD_PRINTTALK, "You already have a camera!")
 		return 
@@ -19,15 +20,16 @@ function ENT:SpawnFunction( ply, tr )
 	if(ent:IsValid()) then
 		ply:SetNetworkedEntity("gb_cam", ent)
 	end
+
 	local ownerteam = ply:Team()
 	local teamcolor = team.GetColor(ownerteam)
 	local teamcolorfix = Color(teamcolor.r, teamcolor.g, teamcolor.b)
 	ent:SetColor(teamcolorfix)
+
 	return ent
 end
 
 function ENT:Initialize()
-
 	self.Entity:SetModel( "models/dav0r/camera.mdl")
 	self.Entity:PhysicsInit(SOLID_VPHYSICS)
 	self.Entity:SetMoveType(MOVETYPE_VPHYSICS)
@@ -36,6 +38,7 @@ function ENT:Initialize()
 	if(phys:IsValid()) then
 		phys:Wake() 
 	end
+
 	self.aHealth = 50000
 end
 

@@ -1,4 +1,3 @@
-print("*****CL INIT LOADED FOR CORE*****")
 include("shared.lua")
 
 function ENT:Initialize()
@@ -6,9 +5,10 @@ end
 
 function ENT:Draw()
 	self.BaseClass.Draw(self)
-
 	local beam_length = 20
+
 	if (beam_length > 0) then
+		local traceMat = Material("cable/redlaser")
 
 		local start = self.Entity:GetPos()
 		local endpos = start + (self.Entity:GetUp() * beam_length)
@@ -30,17 +30,7 @@ function ENT:Draw()
 		if (lepos.z > bbmax.z) then bbmax.z = lepos.z end
 		self.Entity:SetRenderBounds(bbmin, bbmax, Vector()*6)
 
-		local trace = {}
-		trace.start = start
-		trace.endpos = endpos
-		trace.filter = { self.Entity }
-
-		local trace = util.TraceLine(trace)
-		if (trace.Hit) then
-			endpos = trace.HitPos
-		end
-
-		render.SetMaterial(Material( "cable/redlaser" ))
+		render.SetMaterial(traceMat)
 		render.DrawBeam(start, endpos, 12, 0, 10, Color(255, 255, 255, 255))
 	end
 end

@@ -1,10 +1,10 @@
 // sv_funcs.lua
 // Houses the most important functions server-side
 
-function Announcement(text, time, player)
+function Announcement(text, time)
 	net.Start("gb_announcement")
 		net.WriteUInt(time, 32)
-		net.WriteUInt(table.getn(text), 32)
+		net.WriteUInt(#text, 32)
 
 		for k,v in pairs(text) do
 			net.WriteString(v)
@@ -277,20 +277,20 @@ function GameOver(winteam)
 		end
 
 		//health
-		net.WriteUInt(health_count)
+		net.WriteUInt(health_count, 16)
 		for i=1, health_count do
 			net.WriteEntity(new_healths[i][1])
 			net.WriteUInt(new_healths[i][2], 16)
 		end
 
 		//damage
-		net.WriteUInt(damage_count)
+		net.WriteUInt(damage_count, 16)
 		for i=1, damage_count do
 			net.WriteEntity(new_damages[i][1])
 			net.WriteUInt(new_damages[i][2], 16)
 		end
 
-		net.WriteColor(wincolor.r, wincolor.g, wincolor.b, 255)
+		net.WriteColor(Color(wincolor.r, wincolor.g, wincolor.b, 255))
 		net.WriteString(winmsg)
 	net.Broadcast()
 

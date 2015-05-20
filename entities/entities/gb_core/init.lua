@@ -1,18 +1,18 @@
-print("*****INIT LOADED FOR CORE*****")
-AddCSLuaFile("cl_init.lua")
-AddCSLuaFile("shared.lua")
-include("shared.lua")
+AddCSLuaFile( "cl_init.lua" )
+AddCSLuaFile( "shared.lua" )
+include( "shared.lua" )
 
 function ENT:UpdateCoreHealth()
 	if (self.Owner && self.Owner:IsValid()) then
 		if (self.aHealth < 0) then
 			self.aHealth = 0
 		end
+
 		self.Owner:SetNetworkedInt("gb_corehealth", math.ceil(self.aHealth))
 	end
 end
 
-local function UpdateTeamCores_Server(red, blue) //used to give an instant reaction
+function ENT:UpdateTeamCores_Server(red, blue) //used to give an instant reaction
 	gb_NumRedCores = red
 	gb_NumBlueCores = blue
 
@@ -34,7 +34,7 @@ function ENT:CheckFlip()
 	return false
 end
 
-function ENT:SpawnFunction( ply, tr )
+function ENT:SpawnFunction(ply, tr)
 	if ( !tr.Hit ) then return end
 
 	if (ply:GetNetworkedEntity("gb_core"):IsValid()) then
@@ -58,10 +58,10 @@ function ENT:SpawnFunction( ply, tr )
 
 	local ownerteam = ply:Team()
 	if (ownerteam == 1) then
-		UpdateTeamCores_Server(gb_NumRedCores + 1, gb_NumBlueCores)
+		self:UpdateTeamCores_Server(gb_NumRedCores + 1, gb_NumBlueCores)
 
 	elseif (ownerteam == 2) then
-		UpdateTeamCores_Server(gb_NumRedCores, gb_NumBlueCores + 1)
+		self:UpdateTeamCores_Server(gb_NumRedCores, gb_NumBlueCores + 1)
 	end
 
 	return ent
@@ -141,8 +141,8 @@ function ENT:DestroyEffects()
 	if phy2:IsValid() then phy2:EnableMotion(false) end
 
 	ed:SetEntity(self.DamageProp)
-	local teamcolor = team.GetColor(self.Owner:Team())
 
+	local teamcolor = team.GetColor(self.Owner:Team())
 	if(teamcolor.r < teamcolor.b) then
 		ed:SetMagnitude(1)
 	elseif(teamcolor.r > teamcolor.b) then
@@ -153,7 +153,7 @@ function ENT:DestroyEffects()
 	util.Effect("core_asplode", ed)
 
 	timer.Simple(1, function()
-		self.DamageProp.EmitSound(self.DamageProp,"ambient/explosions/explode_1.wav", 500, 100)
+		self.DamageProp.EmitSound(self.DamageProp, "ambient/explosions/explode_1.wav", 500, 100)
 	end)
 
 	timer.Simple(1.01, function()
@@ -175,9 +175,9 @@ function ENT:OnRemove()
 	end
 
 	if (self.Team == 1) then
-		UpdateTeamCores_Server(gb_NumRedCores - 1, gb_NumBlueCores)
+		self:UpdateTeamCores_Server(gb_NumRedCores - 1, gb_NumBlueCores)
 	elseif (self.Team == 2) then
-		UpdateTeamCores_Server(gb_NumRedCores, gb_NumBlueCores - 1)
+		self:UpdateTeamCores_Server(gb_NumRedCores, gb_NumBlueCores - 1)
 	end
 end
 
