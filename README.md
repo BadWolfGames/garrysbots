@@ -12,6 +12,7 @@ If you find any bug please report them with the error if any.
 * craze - Created the orginal gamemode.
 * mahalis - Core explosion effect.
 * suicidal.banana - Making the orginal SUI scoreboard.
+* Nexus - Porting the SUI scoreboard (https://steamcommunity.com/sharedfiles/filedetails/?id=160121673).
 * Saint-Wish - Maintaining and developing the current gamemode.
 * Tigerkev - Some help here and there.
 
