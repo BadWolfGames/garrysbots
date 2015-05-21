@@ -9,9 +9,9 @@ If you find any bug please report them with the error if any.
 
 <h2>Credits</h2>
 * LuaBanana - Created the orginal gamemode.
-* mahalis - Created the orginal gamemode.
-* craze - Code changes?
-
+* craze - Created the orginal gamemode.
+* mahalis - Core explosion effect.
+* suicidal.banana - Making the orginal SUI scoreboard.
 * Saint-Wish - Maintaining and developing the current gamemode.
 * Tigerkev - Some help here and there.
 
