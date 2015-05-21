@@ -1,6 +1,5 @@
 // Defines
-
-gb_Version = "0.0.6a"
+gb_Version = "0.0.7a"
 
 gb_CurrentRound = 1
 gb_RoundTimer = 0

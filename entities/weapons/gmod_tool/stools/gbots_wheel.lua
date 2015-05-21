@@ -119,7 +119,7 @@ function TOOL:Reload( trace )
 	if ( CLIENT ) then return true end
 
 	local constraints = constraint.FindConstraints( trace.Entity, "Motor" )
-	local numconsts = table.getn(constraints)
+	local numconsts = #constraints
 	for k, const in pairs(constraints) do
 		local wheel
 		local constent = const.Entity[1]

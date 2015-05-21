@@ -6,10 +6,20 @@ Version number:
 	  ^ Major update number
 	    ^ Minor update number
 	     ^ State of release (a = alpha, b = beta, rt = release test, r = release)
-
-Latest SVN rev:
-	--
 ::::::::::::::::::::::::::::::::::::
+
+Version 0.0.7a
+	-Organzied some hooks and con commands.
+	-Fixed turning off noclip while spectating.
+	-Fixed small layout thing with MOTD
+		-Added space between help and rules.
+	-Improved TimerCountdown function
+	-Renamed admin.lua to sv_admin.lua
+	-Replaced table.getn with #
+	-Added check for map load on game end.
+		-Basically if the maps in your mapcyclefile aren't gb_ then it reloads the current map.
+	-Removed player_row.lua
+		-The file was useless.
 
 Version 0.0.6a
 	-Fixed core laser

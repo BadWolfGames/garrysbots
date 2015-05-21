@@ -1,5 +1,4 @@
 // Config
-
 gb_sb_top = "Garry's Bots"
 gb_sb_middle = "Press F1 for the help menu."
 gb_sb_bottom = "Developed by LuaBanana and Craze, maintained by BWG"
@@ -101,6 +100,7 @@ MOTDHTML = [[
 5. Ceiling/Wall bots are ok IF YOU ARE ACTUALLY PLAYING. If you are just hiding there so you will win, you'll find yourself banned.<br>
 6. Asking about things that are covered in the MOTD/Help screen will earn you a kick.
 
+<br><br>
 <div style="font-size: 20px; width: 100%; font-weight: bold;">Help:</div><br>
 Refer to the gamemode help screen, press F1.<br><br>
 

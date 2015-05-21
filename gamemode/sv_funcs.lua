@@ -135,9 +135,9 @@ function VoteSkip( ply, command, args )
 			end
 		end
 
-		local percent = table.getn(VoteSkipInfo) / table.getn(player.GetAll())
-		local required = math.ceil(gb_VoteSkipPercent * table.getn(player.GetAll()))
-		local remaining = required - table.getn(VoteSkipInfo)
+		local percent = #VoteSkipInfo / #player.GetAll()
+		local required = math.ceil(gb_VoteSkipPercent * #player.GetAll())
+		local remaining = required - #VoteSkipInfo
 
 		if (percent >= gb_VoteSkipPercent) then
 			Announcement({ply:Name().." has voted to skip the build round.", "Required "..required.." voteskips reached", "FIGHT!!!"}, 5)
@@ -150,7 +150,14 @@ end
 concommand.Add("gb_voteskip", VoteSkip )
 
 function Changethemap()
-	game.LoadNextMap()
+	local map = game.GetMapNext()
+	local prefix = map:sub(0, 3)
+
+	if prefix == "gb_" then
+		game.LoadNextMap()
+	else
+		game.ConsoleCommand("changelevel "..game.GetMap().."\n")
+	end
 end
 
 function GameOver(winteam)
@@ -165,6 +172,7 @@ function GameOver(winteam)
 		elseif winteam == 2 then
 			winmsg = "Blue team wins!"
 		end
+
 	else //normal win
 		if gb_NumRedCores > gb_NumBlueCores then
 			// Red team wins!
@@ -187,20 +195,23 @@ function GameOver(winteam)
 	end
 
 	local new_times = {}
-	for i=1, table.getn(times) do
+	for i=1, #times do
 		local longest = {0,0,0}
+
 		for k, v in pairs(times) do
 			if (v[2] > longest[2] || longest[1] == 0) then
 				longest = {v[1], v[2], k}
 			end
 		end
+
 		if (longest[2] != 0) then
 			table.insert(new_times, {longest[1], longest[2]})
 		end
+
 		table.remove(times, longest[3])
 	end
 
-	local time_count = table.getn(new_times)
+	local time_count = #new_times
 	if time_count > 10 then
 		time_count = 10
 	end
@@ -213,7 +224,7 @@ function GameOver(winteam)
 	end
 
 	local new_healths = {}
-	for i=1, table.getn(healths) do
+	for i=1, #healths do
 		local longest = {0,0,0}
 
 		for k, v in pairs(healths) do
@@ -229,7 +240,7 @@ function GameOver(winteam)
 		table.remove(healths, longest[3])
 	end
 
-	local health_count = table.getn(new_healths)
+	local health_count = #new_healths
 	if health_count > 10 then
 		health_count = 10
 	end
@@ -242,7 +253,7 @@ function GameOver(winteam)
 	end
 
 	local new_damages = {}
-	for i=1, table.getn(damages) do
+	for i=1, #damages do
 		local longest = {0,0,0}
 
 		for k, v in pairs(damages) do
@@ -258,7 +269,7 @@ function GameOver(winteam)
 		table.remove(damages, longest[3])
 	end
 
-	local damage_count = table.getn(new_damages)
+	local damage_count = #new_damages
 	if damage_count > 20 then
 		damage_count = 20
 	end
@@ -300,72 +311,67 @@ function GameOver(winteam)
 	timer.Remove("checkcores")
 end
 
+local gb_RoundFuncs= {
+	[10*60] = function()
+		Announcement({"Ten minutes remaining."}, 5)
+	end,
+	[5*60] = function()
+		Announcement({"Five minutes remaining."}, 5)
+	end,
+	[1*60] = function(death)
+		if death then
+			for k, ent in pairs(ents.FindByClass("prop_physics")) do
+				if ent:IsValid() then
+					ent:Fire("physdamagescale", tostring(gb_SuddenDeathPropDamageScale))
+				end
+			end
+
+			Announcement({"One minute remaining!", "Sudden Death is now ON"}, 5)
+
+		else
+			Announcement({"One minute remaining!"}, 5)
+		end
+	end,
+	[30] = function()
+		Announcement({"30 seconds remaining!"}, 5)
+	end,
+	[10] = function()
+		Announcement({"10 seconds remaining!"}, 5)
+	end,
+	[5] = function()
+		Announcement({"5..."}, 2)
+	end,
+	[4] = function()
+		Announcement({"4..."}, 2)
+	end,
+	[3] = function()
+		Announcement({"3..."}, 2)
+	end,
+	[2] = function()
+		Announcement({"2..."}, 2)
+	end,
+	[1] = function()
+		Announcement({"1..."}, 2)
+	end,
+}
+
 function TimerCountdown()
 	gb_RoundTimer = gb_RoundTimer - 1
 	if (#player.GetAll() <= 1) then return; end
 
 	//announcements and sudden death
 	if gb_CurrentRound == 1 then
-		if gb_RoundTimer == 10*60 then
-			Announcement({"Ten minutes remaining."}, 5)
-		elseif gb_RoundTimer == 5*60 then
-			Announcement({"Five minutes remaining."}, 5)
-		elseif gb_RoundTimer == 1*60 then
-			Announcement({"One minute remaining!"}, 5)
-		elseif gb_RoundTimer == 30 then
-			Announcement({"30 seconds remaining!"}, 5)
-		elseif gb_RoundTimer == 10 then
-			Announcement({"10 seconds remaining!"}, 5)
-		elseif gb_RoundTimer == 5 then
-			Announcement({"5..."}, 2)
-		elseif gb_RoundTimer == 4 then
-			Announcement({"4..."}, 2)
-		elseif gb_RoundTimer == 3 then
-			Announcement({"3..."}, 2)
-		elseif gb_RoundTimer == 2 then
-			Announcement({"2..."}, 2)
-		elseif gb_RoundTimer == 1 then
-			Announcement({"1..."}, 2)
-		end
+		gb_RoundFuncs[gb_RoundTimer]()
 
 	elseif gb_CurrentRound == 2 then
-		if gb_RoundTimer == 10*60 then
-			Announcement({"Ten minutes remaining."}, 5)
-		elseif gb_RoundTimer == 5*60 then
-			Announcement({"Five minutes remaining."}, 5)
-		elseif gb_RoundTimer == 1*60 then
-			if gb_SuddenDeath then
-				Announcement({ "One minute remaining!", "Sudden Death is now ON" }, 5)
-
-				for k, ent in pairs(ents.FindByClass("prop_physics")) do
-					if ent:IsValid() then
-						ent:Fire("physdamagescale", tostring(gb_SuddenDeathPropDamageScale))
-					end
-				end
-			else
-				Announcement({"One minute remaining!"}, 5)
-			end
-		elseif gb_RoundTimer == 30 then
-			Announcement({"30 seconds remaining!"}, 5)
-		elseif gb_RoundTimer == 10 then
-			Announcement({"10 seconds remaining!"}, 5)
-		elseif gb_RoundTimer == 5 then
-			Announcement({"5..."}, 2)
-		elseif gb_RoundTimer == 4 then
-			Announcement({"4..."}, 2)
-		elseif gb_RoundTimer == 3 then
-			Announcement({"3..."}, 2)
-		elseif gb_RoundTimer == 2 then
-			Announcement({"2..."}, 2)
-		elseif gb_RoundTimer == 1 then
-			Announcement({"1..."}, 2)
-		end
+		gb_RoundFuncs[gb_RoundTimer](gb_SuddenDeath)
 	end
 
 	if gb_RoundTimer <= 0 then
 		if gb_CurrentRound == 1 then
 			Announcement({"FIGHT!"}, 5)
 			StartFight()
+
 		elseif gb_CurrentRound == 2 then
 			GameOver()
 		end

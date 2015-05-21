@@ -20,7 +20,7 @@ include( "config.lua" )
 include( "shared.lua" )
 include( "sv_funcs.lua" )
 include( "sh_scoreboard.lua" )
-include( "admin.lua" )
+include( "sv_admin.lua" )
 
 util.AddNetworkString("gb_timercountdown")
 util.AddNetworkString("gb_changeround")
@@ -28,7 +28,7 @@ util.AddNetworkString("gb_updateteamcores")
 util.AddNetworkString("gb_postgame")
 util.AddNetworkString("gb_announcement")
 
-function KeyPressed(ply, key)
+hook.Add("KeyPress", "gb_KeyPressedHook", function(ply, key)
 	local healthobjs = {"prop_physics"}
 
 	if(key == 32) then
@@ -44,77 +44,70 @@ function KeyPressed(ply, key)
 	else
 		return
 	end
-end
-hook.Add( "KeyPress", "KeyPressedHook", KeyPressed )
+end)
 
-function CCSpawnSWEP( player, command, arguments )
+concommand.Add("gm_giveswep", function(ply, cmd, args)
 	return
-end
-concommand.Add( "gm_giveswep", CCSpawnSWEP )
+end)
 
-function CCSpawnSENT( player, command, arguments )//break the SENT menu
+concommand.Add("gm_spawnsent", function(ply, cmd, args)
 	return
-end
-concommand.Add( "gm_spawnsent", CCSpawnSENT )
+end)
 
-function CCSpawnSENT2( player, command, arguments )
+concommand.Add("gm_spawnsent2", function(ply, cmd, args)
 	local AllowedSENTs = { "gb_cam", "gb_core" }
-	if ( arguments[1] == nil || !table.HasValue( AllowedSENTs, arguments[1] ) || gb_CurrentRound != 1 ) then return end
+	if ( args[1] == nil || !table.HasValue( AllowedSENTs, args[1] ) || gb_CurrentRound != 1 ) then return end
 
-	local sent = scripted_ents.GetStored( arguments[1] )
+	local sent = scripted_ents.GetStored( args[1] )
 	if (sent == nil) then return end
 
 	sent = sent.t
 
 	if (!sent.SpawnFunction) then return end
 
-	if ( !gamemode.Call( "PlayerSpawnSENT", player, arguments[1] ) ) then return end
+	if ( !gamemode.Call( "PlayerSpawnSENT", ply, args[1] ) ) then return end
 
-	local vStart = player:GetShootPos()
-	local vForward = player:GetAimVector()
+	local vStart = ply:GetShootPos()
+	local vForward = ply:GetAimVector()
 	local trace = {}
 	trace.start = vStart
 	trace.endpos = vStart + (vForward * 2048)
-	trace.filter = player
+	trace.filter = ply
 	local tr = util.TraceLine( trace )
-	local entity = sent:SpawnFunction( player, tr )
+	local entity = sent:SpawnFunction( ply, tr )
 
 	if ( entity ) then
-		gamemode.Call( "PlayerSpawnedSENT", player, entity )
+		gamemode.Call( "PlayerSpawnedSENT", ply, entity )
 
 		undo.Create("SENT")
-			undo.SetPlayer(player)
+			undo.SetPlayer(ply)
 			undo.AddEntity(entity)
-		undo.Finish( "Scripted Entity ("..tostring(arguments[1])..")" )
+		undo.Finish( "Scripted Entity ("..tostring(args[1])..")" )
 
-		player:AddCleanup( "sents", entity )		
-		entity:SetVar( "Player", player )
+		ply:AddCleanup( "sents", entity )		
+		entity:SetVar( "Player", ply )
 	end
-end
-concommand.Add( "gm_spawnsent2", CCSpawnSENT2 )
+end)
 
-function CCSpawnNPC( player, command, arguments )
+concommand.Add("gmod_spawnnpc", function(ply, cmd, args)
 	return
-end
-concommand.Add( "gmod_spawnnpc", CCSpawnNPC )
+end)
 
-function CCSpawnVehicle( player, command, arguments )
+concommand.Add("gm_spawnvehicle", function(ply, cmd, args)
 	return
-end
-concommand.Add( "gm_spawnvehicle", CCSpawnVehicle )
+end)
 
-function CCSpawn( player, command, arguments )
+concommand.Add("gm_spawn", function(ply, cmd, args)
 	if gb_CurrentRound != 1 then return end
 
-	if ( arguments[1] == nil ) then return end
-	if ( !gamemode.Call( "PlayerSpawnObject", player ) ) then return end
-	if ( !util.IsValidProp( arguments[1] ) ) then return end
+	if ( args[1] == nil ) then return end
+	if ( !gamemode.Call( "PlayerSpawnObject", ply ) ) then return end
+	if ( !util.IsValidProp( args[1] ) ) then return end
 
-	GMODSpawnProp( player, arguments[1], 0, 0 )
-end
-concommand.Add( "gm_spawn", CCSpawn )
+	GMODSpawnProp( ply, args[1], 0, 0 )
+end)
 
-function PropCheck( player, model )
+hook.Add("PlayerSpawnProp", "gb_PropCheck", function(player, model)
 	local prop = DoPlayerEntitySpawn( player, "prop_physics", model, 1 )
 	local min,max = prop:WorldSpaceAABB()
 	local size = min:Distance(max)
@@ -141,10 +134,9 @@ function PropCheck( player, model )
 	end
 
 	return true
-end
-hook.Add("PlayerSpawnProp", "Prop Check", PropCheck)
+end)
 
-function ToggleCamera(ply, cmd, args)
+concommand.Add("gb_togglecam", function(ply, cmd, args)
 	local spectating = ply:GetNetworkedBool("spectating")
 	local cam = ply:GetNetworkedEntity("gb_cam")
 
@@ -173,10 +165,9 @@ function ToggleCamera(ply, cmd, args)
 			ply:PrintMessage(HUD_PRINTTALK, "You do not have a camera!")	
 		end
 	end
-end
-concommand.Add("gb_togglecam", ToggleCamera)
+end)
 
-function ChangeTeam(ply, cmd, args)
+concommand.Add("gb_changeteam", function(ply, cmd, args)
 	if gb_CurrentRound != 1 then
 		ply:ChatPrint("You cannot change teams during the fight.")
 		return
@@ -185,11 +176,13 @@ function ChangeTeam(ply, cmd, args)
 	if (team.NumPlayers(1) == team.NumPlayers(2)) then
 		RemoveRobot(ply)
 		ply:Kill()
+
 		if args[1] == "red" then
 			ply:SetTeam( 1 )
 		elseif args[1] == "blue" then
 			ply:SetTeam( 2 )
 		end
+
 		return
 
 	elseif (team.NumPlayers(1) < team.NumPlayers(2)) then
@@ -197,6 +190,7 @@ function ChangeTeam(ply, cmd, args)
 			RemoveRobot(ply)
 			ply:Kill()
 			ply:SetTeam( 1 )
+
 			return
 		end
 
@@ -205,29 +199,26 @@ function ChangeTeam(ply, cmd, args)
 			RemoveRobot(ply)
 			ply:Kill()
 			ply:SetTeam( 2 )
+
 			return
 		end
 	end
 
 	ply:ChatPrint("There are too many players on that team.")
-end
-concommand.Add("gb_changeteam", ChangeTeam)
+end)
 
 KaboomTable = {}
-function Kaboom()
-	if table.getn(KaboomTable) == 0 then return end //nothing to blow up
+timer.Create("kaboom", 0.1, 0, function()
+	if #KaboomTable == 0 then return end //nothing to blow up
 	local ent = KaboomTable[1]
 	table.remove(KaboomTable, 1)
 
 	if (ent != nil && ent:IsValid()) then
-		//MsgAll("kaboom ran with valid ent\n")
 		DestroyProp(ent)
 	else
-		//MsgAll("kaboom ran with invalid ent\n")
 		Kaboom()
 	end
-end
-timer.Create("kaboom", 0.1, 0, Kaboom)
+end)
 
 function DestroyProp(ent)
 	local vPoint = ent:GetPos()
@@ -249,7 +240,6 @@ function RemoveRobot( player )
 end
 
 function DestroyRobot(player)
-	//MsgAll("destroy robot called\n")
 	if player:GetNetworkedEntity("gb_core"):IsValid() then
 		player:GetNetworkedEntity("gb_core"):GetTable():DestroyEffects()
 	end
@@ -261,7 +251,6 @@ function DestroyRobot(player)
 		for k, ent in pairs(playerents) do
 			if ent:IsValid() then
 				if (ent:GetVar( "Founder", "nothing" ) == player && !ent:GetVar("DamageModel")) then
-					//MsgAll("destroy robot added: "..tostring(ent).."\n")
 					table.insert( KaboomTable, ent )
 				end
 			end
@@ -269,16 +258,14 @@ function DestroyRobot(player)
 	end
 end
 
-function PlayerForfeit( player, command, arguments )
-	//MsgAll("forfeit called\n")
+concommand.Add("gb_forfeit", function(ply, cmd, args)
 	if gb_CurrentRound == 1 then
-		player:ChatPrint("You can only forfeit during the fight.")
+		ply:ChatPrint("You can only forfeit during the fight.")
 		return
 	end
 
-	DestroyRobot(player)
-end
-concommand.Add("gb_forfeit", PlayerForfeit)
+	DestroyRobot(ply)
+end)
 
 function GM:PlayerDisconnected( ply )
 	RemoveRobot( ply )
@@ -309,8 +296,16 @@ hook.Add("PlayerSay", "gb_MOTDCmd", function(ply, text)
 	end
 end)
 
+hook.Add("PlayerNoClip", "gb_Noclip", function(ply, bool)
+	local spectating = ply:GetNetworkedBool("spectating")
+	print(spectating)
+
+	if spectating then
+		return false
+	end
+end)
+
 function GM:CanTool( pl, tr, toolmode )
-	//MsgAll("toolmode: "..tostring(toolmode).."\n")
 	if !table.HasValue( AllowableTools, toolmode ) then
 		pl:PrintMessage(HUD_PRINTTALK, "That tool is not allowed.")
 		return false
@@ -376,6 +371,7 @@ function GM:PlayerSpawn( ply )
 	if gb_CurrentRound != 1 then
 		// Put them into spectator mode
 		local cam = ply:GetNetworkedEntity("gb_cam")
+
 		if(cam:IsValid()) then
 			ply:Spectate( OBS_MODE_CHASE )
 			ply:SpectateEntity(cam)
@@ -422,6 +418,10 @@ function GM:PlayerSpawnedSENT( ply, prop )
 end
 
 function GM:AllowPlayerPickup(ply, ent)
+	return false
+end
+
+function GM:GetFallDamage(ply, speed)
 	return false
 end
 
@@ -530,6 +530,7 @@ function GM:PlayerLoadout(ply)
 		ply:Give( "gmod_camera" )
 		ply:Give( "weapon_physgun" )
 	end
+
 	return true
 end
 
@@ -548,7 +549,7 @@ function GM:PhysgunPickup(ply, ent)
 	return false
 end
 
-function GetPropHealth(ply, cmd, args)
+concommand.Add("gethealth", function(ply, cmd, args)
 	local traceres = ply:GetEyeTrace()
 	local ent = traceres.Entity
 	local healthobjs = {"prop_physics"}
@@ -558,5 +559,4 @@ function GetPropHealth(ply, cmd, args)
 	else
 		ply:PrintMessage(HUD_PRINTTALK, "Current Prop Health: " .. tostring(ent.aHealth))
 	end
-end
-concommand.Add("gethealth", GetPropHealth)
+end)
