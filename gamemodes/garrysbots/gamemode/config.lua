@@ -53,7 +53,8 @@ gb_BannedProps = {
 	"models/props_phx/cannonball.mdl",
 	"models/props_phx/misc/smallcannonball.mdl",
 	"models/props_junk/propane_tank001a.mdl",
-	"models/props_junk/gascan001a.mdl"}
+	"models/props_junk/gascan001a.mdl"
+}
 
 AllowableTools = {
 	"adv_duplicator",
@@ -75,7 +76,8 @@ AllowableTools = {
 	"winch",
 	"axis",
 	"rope",
-	"gbots_weight"
+	"gbots_weight",
+	"wheel"
 }
 
 AllowableWorldTools = { //things that you can shoot the world with, needs to be in the other table too
