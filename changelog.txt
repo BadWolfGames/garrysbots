@@ -20,6 +20,8 @@ Version 0.0.7a
 		-Basically if the maps in your mapcyclefile aren't gb_ then it reloads the current map.
 	-Removed player_row.lua
 		-The file was useless.
+	-Removed their wheel tool.
+		-Gonna use the default one for now.
 
 Version 0.0.6a
 	-Fixed core laser
