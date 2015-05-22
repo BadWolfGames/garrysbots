@@ -306,15 +306,15 @@ hook.Add("PlayerNoClip", "gb_Noclip", function(ply, bool)
 end)
 
 function GM:CanTool( pl, tr, toolmode )
-	if !table.HasValue( AllowableTools, toolmode ) then
+	if !gb_ToolsWhitelist[toolmode] then
 		pl:PrintMessage(HUD_PRINTTALK, "That tool is not allowed.")
 		return false
 	end
 
 	local trent = tr.Entity
-	if ((!trent:IsValid() && !trent:IsWorld()) || trent:IsPlayer() || (trent:IsWorld() && !table.HasValue( AllowableWorldTools, toolmode ))) then
+	if ((!trent:IsValid() && !trent:IsWorld()) || trent:IsPlayer() || (trent:IsWorld() && !gb_WorldToolsWhitelist[toolmode])) then
 		return false
-	elseif (trent:IsWorld() && table.HasValue( AllowableWorldTools, toolmode )) then
+	elseif (trent:IsWorld() && gb_WorldToolsWhitelist[toolmode] then
 		return true
 	end
 

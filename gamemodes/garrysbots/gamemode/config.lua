@@ -56,32 +56,29 @@ gb_BannedProps = {
 	"models/props_junk/gascan001a.mdl"
 }
 
-AllowableTools = {
-	"adv_duplicator",
-	"ballsocket",
-	"ballsocket_adv",
-	"ballsocket_ez",
-	"elastic",
-	"hydraulic",
-	"muscle",
-	"motor",
-	"nocollide",
-	"pulley",
-	"remover",
-	"slider",
-	"gbots_thruster",
-	"weld",
-	"weld_ez",
-	"gbots_wheel",
-	"winch",
-	"axis",
-	"rope",
-	"gbots_weight",
-	"wheel"
+gb_ToolsWhitelist = { //Whitelist the tools you want players to be able to use.
+	["adv_duplicator"] = true,
+	["ballsocket"] = true,
+	["elastic"] = true,
+	["hydraulic"] = true,
+	["muscle"] = true,
+	["motor"] = true,
+	["nocollide"] = true,
+	["pulley"] = true,
+	["remover"] = true,
+	["slider"] = true,
+	["gbots_thruster"] = true,
+	["weld"],
+	["gbots_wheel"] = true,
+	["winch"] = true,
+	["axis"] = true,
+	["rope"] = true,
+	["gbots_weight"] = true,
+	["wheel"] = true
 }
 
-AllowableWorldTools = { //things that you can shoot the world with, needs to be in the other table too
-	"adv_duplicator"
+gb_WorldToolsWhitelist = { //things that you can shoot the world with, needs to be in the other table too
+	["adv_duplicator"] = true,
 }
 
 MOTDHTML = [[

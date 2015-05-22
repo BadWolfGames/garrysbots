@@ -13,7 +13,7 @@ end
 local baseAddToolMenuOption = spawnmenu.AddToolMenuOption
 function spawnmenu.AddToolMenuOption( tab, cat, name, text, cmd, cp, cpf, btn )
 	if (tab == "Main") then
-		if (!table.HasValue(AllowableTools, name)) then return end
+		if !gb_ToolsWhitelist[name] then return end
 
 		if cat != "Garry's Bots" then
 			baseAddToolMenuOption( tab, "Construction", name, text, cmd, cp, cpf, btn )

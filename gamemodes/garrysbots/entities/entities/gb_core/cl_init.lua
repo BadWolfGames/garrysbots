@@ -30,6 +30,16 @@ function ENT:Draw()
 		if (lepos.z > bbmax.z) then bbmax.z = lepos.z end
 		self.Entity:SetRenderBounds(bbmin, bbmax, Vector()*6)
 
+		/*local trace = {}
+		trace.start = start
+		trace.endpos = endpos
+		trace.filter = { self.Entity }
+
+		local trace = util.TraceLine(trace)
+		if (trace.Hit) then
+			endpos = trace.HitPos
+		end*/
+
 		render.SetMaterial(traceMat)
 		render.DrawBeam(start, endpos, 12, 0, 10, Color(255, 255, 255, 255))
 	end
