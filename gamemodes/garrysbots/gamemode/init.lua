@@ -22,6 +22,7 @@ include( "sv_funcs.lua" )
 include( "sh_scoreboard.lua" )
 include( "sv_admin.lua" )
 
+
 util.AddNetworkString("gb_timercountdown")
 util.AddNetworkString("gb_changeround")
 util.AddNetworkString("gb_updateteamcores")
@@ -312,9 +313,10 @@ function GM:CanTool( pl, tr, toolmode )
 	end
 
 	local trent = tr.Entity
-	if ((!trent:IsValid() && !trent:IsWorld()) || trent:IsPlayer() || (trent:IsWorld() && !gb_WorldToolsWhitelist[toolmode])) then
+
+	if ((!trent:IsValid() && !trent:IsWorld()) || trent:IsPlayer() || (trent:IsWorld() && !gb_WorldToolsWhitelist[toolmode]) ) then
 		return false
-	elseif (trent:IsWorld() && gb_WorldToolsWhitelist[toolmode] then
+	elseif (trent:IsWorld() && gb_WorldToolsWhitelist[toolmode]) then
 		return true
 	end
 

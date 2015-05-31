@@ -68,7 +68,7 @@ gb_ToolsWhitelist = { //Whitelist the tools you want players to be able to use.
 	["remover"] = true,
 	["slider"] = true,
 	["gbots_thruster"] = true,
-	["weld"],
+	["weld"] = true,
 	["gbots_wheel"] = true,
 	["winch"] = true,
 	["axis"] = true,
