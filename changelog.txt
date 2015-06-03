@@ -8,6 +8,9 @@ Version number:
 	     ^ State of release (a = alpha, b = beta, rt = release test, r = release)
 ::::::::::::::::::::::::::::::::::::
 
+Version 1.0.0r
+	-Final code fixes. (probably)
+
 Version 0.0.8a
 	-Deleted the old gbots core.
 	-Improved the tools check. Thanks to zerf's refactor.
