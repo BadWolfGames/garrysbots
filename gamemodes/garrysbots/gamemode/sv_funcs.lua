@@ -312,13 +312,13 @@ function GameOver(winteam)
 end
 
 local gb_RoundFuncs= {
-	[10*60] = function()
+	[600] = function()
 		Announcement({"Ten minutes remaining."}, 5)
 	end,
-	[5*60] = function()
+	[300] = function()
 		Announcement({"Five minutes remaining."}, 5)
 	end,
-	[1*60] = function(death)
+	[60] = function(death)
 		if death then
 			for k, ent in pairs(ents.FindByClass("prop_physics")) do
 				if ent:IsValid() then
