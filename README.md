@@ -14,8 +14,7 @@ If you find any bug please report them with the error if any.
 * mahalis - Core explosion effect.
 * suicidal.banana - Making the original SUI scoreboard.
 * Nexus - Porting the SUI scoreboard (https://steamcommunity.com/sharedfiles/filedetails/?id=160121673).
-* Saint-Wish - Maintaining and porting the gamemode.
-* Tigerkev - Some help here and there.
+* Bad Wolf Games - Maintaining and porting the gamemode.
 
 <h2>Extra Info</h2>
 If you use this gamemode please keep all the people in the credits. If you want to help out or add something to the source then just do a pull request.
