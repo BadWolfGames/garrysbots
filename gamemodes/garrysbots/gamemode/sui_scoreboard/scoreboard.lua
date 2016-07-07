@@ -79,24 +79,15 @@ function PANEL:Init()
 	
 	self.lblPing = vgui.Create( "DLabel", self )
 	self.lblPing:SetText( "Ping" )
-	
-	self.lblKills = vgui.Create( "DLabel", self )
-	self.lblKills:SetText( "Kills" )
-	
-	self.lblDeaths = vgui.Create( "DLabel", self )
-	self.lblDeaths:SetText( "Deaths" )
-
-	self.lblRatio = vgui.Create( "DLabel", self )
-	self.lblRatio:SetText( "Ratio" )
 
 	self.lblHealth = vgui.Create( "DLabel", self )
-	self.lblHealth:SetText( "Health" )
+	self.lblHealth:SetText( "Core Health" )
 
 	if utimecheck then self.lblHours = vgui.Create( "DLabel", self ) end
 	if utimecheck then self.lblHours:SetText( "Hours" ) end
 	
-	if ulibcheck then self.lblTeam = vgui.Create( "DLabel", self ) end
-	if ulibcheck then self.lblTeam:SetText( "Team" ) end
+	--if ulibcheck then self.lblTeam = vgui.Create( "DLabel", self ) end
+	--if ulibcheck then self.lblTeam:SetText( "Team" ) end
 end
 
 /*---------------------------------------------------------
@@ -121,7 +112,7 @@ end
 function PANEL:Paint( w, h )
 	draw.RoundedBox( 10, 0, 0, self:GetWide(), self:GetTall(), Color( 50, 50, 50, 205 ) )
 	surface.SetTexture( texGradient )
-	surface.SetDrawColor( 100, 100, 100, 155 )
+	surface.SetDrawColor( 100, 100, 100, 50 )
 	surface.DrawTexturedRect( 0, 0, self:GetWide(), self:GetTall() ) 
 	
 	// White Inner Box
@@ -136,12 +127,8 @@ function PANEL:Paint( w, h )
 	surface.SetDrawColor( 255, 255, 255, 50 )
 	surface.DrawTexturedRect( 108, self.Description.y - 4, self:GetWide() - 128, self.Description:GetTall() + 8 ) 
 	
-	// Logo!
-	--if ColorCmp( team.GetColor(21), Color( 255, 255, 100, 255 ) ) then
-	--	tColor = Color( 255, 155, 0, 255 )
-	--else
-  		tColor = Color( 0, 155, 255, 255 )--team.GetColor(21)
- 	--end
+
+  	tColor = team.GetColor(LocalPlayer():Team())
 	
 	if (tColor.r < 255) then
 		tColorGradientR = tColor.r + 15
@@ -160,7 +147,7 @@ function PANEL:Paint( w, h )
 	end
 	draw.RoundedBox( 8, 24, 12, 80, 80, Color( tColor.r, tColor.g, tColor.b, 200 ) )
 	surface.SetTexture( texGradient )
-	surface.SetDrawColor( tColorGradientR, tColorGradientG, tColorGradientB, 225 )
+	surface.SetDrawColor( tColorGradientR, tColorGradientG, tColorGradientB, 55 )
 	surface.DrawTexturedRect( 24, 12, 80, 80 ) 
 	
 	-- draw.RoundedBox( 4, 20, self.Description.y + self.Description:GetTall() + 6, self:GetWide() - 40, 12, Color( 0, 0, 0, 50 ) )
@@ -220,20 +207,15 @@ function PANEL:PerformLayout()
 		self.lblPing:SizeToContents()
 	end
 	
-	self.lblKills:SizeToContents()
-	self.lblRatio:SizeToContents()
-	self.lblDeaths:SizeToContents()
 	self.lblHealth:SizeToContents()
 	if utimecheck then self.lblHours:SizeToContents() end
-	if ulibcheck then self.lblTeam:SizeToContents() end
-	
-	self.lblPing:SetPos( self:GetWide() - 45 - self.lblPing:GetWide()/2, self.PlayerFrame.y - self.lblPing:GetTall() - 3  )
-	self.lblRatio:SetPos( self:GetWide() - 45*2.4 - self.lblDeaths:GetWide()/2, self.PlayerFrame.y - self.lblPing:GetTall() - 3  )
-	self.lblDeaths:SetPos( self:GetWide() - 45*3.4 - self.lblDeaths:GetWide()/2, self.PlayerFrame.y - self.lblPing:GetTall() - 3  )
-	self.lblKills:SetPos( self:GetWide() - 45*4.4 - self.lblKills:GetWide()/2, self.PlayerFrame.y - self.lblPing:GetTall() - 3  )
-	self.lblHealth:SetPos( self:GetWide() - 45*5.4 - self.lblKills:GetWide()/2, self.PlayerFrame.y - self.lblPing:GetTall() - 3  )
-	if utimecheck then self.lblHours:SetPos( self:GetWide() - 45*7.5 - self.lblKills:GetWide()/2, self.PlayerFrame.y - self.lblPing:GetTall() - 3  ) end
-	if ulibcheck then  self.lblTeam:SetPos( self:GetWide() - 45*10.2 - self.lblKills:GetWide()/2, self.PlayerFrame.y - self.lblPing:GetTall() - 3  ) end
+	--if ulibcheck then self.lblTeam:SizeToContents() end
+	local margin = 15
+	self.lblPing:SetPos( self:GetWide() - 45 - margin, self.PlayerFrame.y - self.lblPing:GetTall() - 3  )
+	margin = 150
+	self.lblHealth:SetPos( self:GetWide() - 45 - margin, self.PlayerFrame.y - self.lblPing:GetTall() - 3  )
+	if utimecheck then self.lblHours:SetPos( self:GetWide() - 45*7.5, self.PlayerFrame.y - self.lblPing:GetTall() - 3  ) end
+	--if ulibcheck then  self.lblTeam:SetPos( self:GetWide() - 45*10.2, self.PlayerFrame.y - self.lblPing:GetTall() - 3  ) end
 end
 
 /*---------------------------------------------------------
@@ -261,13 +243,8 @@ function PANEL:ApplySchemeSettings()
 		self.lblPing:SetFont( "DefaultSmall" )
 	end
 	
-	
-	
-	self.lblKills:SetFont( "DefaultSmall" )
-	self.lblDeaths:SetFont( "DefaultSmall" )
-	if ulibcheck then self.lblTeam:SetFont( "DefaultSmall" ) end
+	--if ulibcheck then self.lblTeam:SetFont( "DefaultSmall" ) end
 	self.lblHealth:SetFont( "DefaultSmall" )
-	self.lblRatio:SetFont( "DefaultSmall" )
 	if utimecheck then self.lblHours:SetFont( "DefaultSmall" ) end
 	
 	-- self.Hostname:SetTextColor( tColor )
@@ -276,11 +253,8 @@ function PANEL:ApplySchemeSettings()
 	self.Logog:SetTextColor( Color( 0, 0, 0, 255 ) )
 	self.SuiSc:SetTextColor( Color( 200, 200, 200, 200 ) )
 	self.lblPing:SetTextColor( Color( 0, 0, 0, 255 ) )
-	self.lblKills:SetTextColor( Color( 0, 0, 0, 255 ) )
-	self.lblDeaths:SetTextColor( Color( 0, 0, 0, 255 ) )
-	if ulibcheck then self.lblTeam:SetTextColor( Color( 0, 0, 0, 255 ) ) end
+	--if ulibcheck then self.lblTeam:SetTextColor( Color( 0, 0, 0, 255 ) ) end
 	self.lblHealth:SetTextColor( Color( 0, 0, 0, 255 ) )
-	self.lblRatio:SetTextColor( Color( 0, 0, 0, 255 ) )
 	if utimecheck then self.lblHours:SetTextColor( Color( 0, 0, 0, 255 ) ) end
 end
 

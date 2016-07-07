@@ -81,7 +81,7 @@ end
 
 function ToggleMusic()
 	if MusicEnabled then
-		LocalPlayer():ConCommand("stopsounds\n")
+		LocalPlayer():ConCommand("stopsound\n")
 		timer.Destroy("MusicLoop")
 		MusicEnabled = false
 	else

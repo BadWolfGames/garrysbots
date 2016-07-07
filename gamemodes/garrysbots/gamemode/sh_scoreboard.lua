@@ -36,7 +36,7 @@ else
 		end
 		
 		function GAMEMODE:ScoreboardShow()
-			if !AllMenusClosed() then return end //dont break my GUI
+			if !AllMenusClosed() then return end --dont break my GUI
 
 			if not SuiScoreBoard then
 				self:CreateScoreboard()

@@ -86,7 +86,7 @@ function WINDOW2:Init()
 	//BUTTONS and TITLES
 	local offset = 5
 	local title1 = vgui.Create( "MenuTitle", self)
-	title1.TEXT = "Change Team"
+	title1.TEXT = "Team Menu"
 	title1:SetPos(5, offset)
 	offset = offset + 30
 
@@ -143,11 +143,6 @@ function WINDOW3:Init()
 	button4:SetPos(5, offset)
 	offset = offset + 30
 
-	local button5 = vgui.Create( "MenuButton", self)
-	button5.TEXT = "Check Prop Health"
-	button5.COMMAND = "gethealth"
-	button5:SetPos(5, offset)
-	offset = offset + 30
 
 	self.HEIGHT = offset
 	self:SetHeight()
@@ -162,7 +157,7 @@ function WINDOW4:Init()
 	//BUTTONS and TITLES
 	local offset = 5
 	local title1 = vgui.Create( "MenuTitle", self)
-	title1.TEXT = "SENTS"
+	title1.TEXT = "Spawn Menu"
 	title1:SetPos(5, offset)
 	offset = offset + 30
 

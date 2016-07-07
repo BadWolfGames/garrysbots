@@ -8,6 +8,14 @@ Version number:
 	     ^ State of release (a = alpha, b = beta, rt = release test, r = release)
 ::::::::::::::::::::::::::::::::::::
 
+Version 1.0.1a by Demonkush
+	-Round timer now functions properly.
+	-Damage system improved.
+	-End Round panel now functions properly.
+	-Scoreboard modified.
+	-General code cleanups and fixes.
+	-Added a few handler variables in config.lua
+
 Version 1.0.0r
 	-Final code fixes. (probably)
 

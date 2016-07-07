@@ -18,7 +18,7 @@ function MOTD_WINDOW:Init()
 	offset = offset + html1:GetTall() + 5
 
 	local button1 = vgui.Create( "CloseButton", self)
-	button1.Parent = self //I shouldn't have to do ths...
+	button1.Parent = self //I shouldnt have to do ths...
 	button1.ALIGNMENT = TEXT_ALIGN_CENTER
 	button1.TEXT = "Close"
 	button1:SetSize(65, 25)
