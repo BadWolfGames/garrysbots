@@ -1,10 +1,15 @@
-// Config
+-- Config
 gb_sb_top = "Garry's Bots"
 gb_sb_middle = "Press F1 for the help menu."
 gb_sb_bottom = "Developed by LuaBanana and Craze, maintained by BWG"
 
 gb_BuildTime = 900
 gb_FightTime = 300
+gb_ExtraTime = true -- set to true if you want to give extra time if there aren't enough cores to start the game.
+gb_ExtraTimeInt = 300 -- extra time to add
+
+gb_RoundSpecAll = false -- set to false if you want to allow people without cores to continue to build after the fight round starts.
+
 
 gb_PostGameTime = 25
 
@@ -23,21 +28,21 @@ gb_PropDamageScale = 0.75
 gb_PropHealthAdd = 25
 gb_PropMaxHealth = 500
 
-gb_SuddenDeath = true //at 1:00 remaining in the fight, prop damage scales
+gb_SuddenDeath = false --at 1:00 remaining in the fight, prop damage scales
 gb_SuddenDeathPropDamageScale = 5
 
-//1 - fixed
-//2 - dynamic A
-//3 - dynamic B
+--1 - fixed
+--2 - dynamic A
+--3 - dynamic B
 gb_PropHealthMethod = 2
 
-//fixed settings
+--fixed settings
 gb_FixedPropHealth = 100
 
-//dynamic A settings
+--dynamic A settings
 gb_PropSizeModifier = 0.006
 
-//dynamic B settings
+--dynamic B settings
 gb_PropHealthModifier = 0.075
 
 gb_BannedProps = {
@@ -56,20 +61,19 @@ gb_BannedProps = {
 	"models/props_junk/gascan001a.mdl"
 }
 
-gb_ToolsWhitelist = { //Whitelist the tools you want players to be able to use.
+gb_ToolsWhitelist = { --Whitelist the tools you want players to be able to use.
 	["adv_duplicator"] = true,
 	["ballsocket"] = true,
 	["elastic"] = true,
 	["hydraulic"] = true,
 	["muscle"] = true,
 	["motor"] = true,
-	["nocollide"] = true,
+	["gbots_nocollide"] = true,
 	["pulley"] = true,
 	["remover"] = true,
 	["slider"] = true,
 	["gbots_thruster"] = true,
 	["weld"] = true,
-	["gbots_wheel"] = true,
 	["winch"] = true,
 	["axis"] = true,
 	["rope"] = true,
@@ -77,7 +81,7 @@ gb_ToolsWhitelist = { //Whitelist the tools you want players to be able to use.
 	["wheel"] = true
 }
 
-gb_WorldToolsWhitelist = { //things that you can shoot the world with, needs to be in the other table too
+gb_WorldToolsWhitelist = { --things that you can shoot the world with, needs to be in the other table too
 	["adv_duplicator"] = true,
 }
 
@@ -129,6 +133,8 @@ If your core is destroyed, you robot dies, be sure to protect it!<br><br>
 
 Everything takes damage, when a prop takes enough damage it will fall off, and eventually explode.<br>
 You can also press F3 to access the forfeit button, which will destroy your robot.<br><br>
+
+F1 - Help Menu || F2 - Team Menu || F3 - Control Panel || F4 - Spawn Menu<br><br>
 
 If you have any other questions, just ask around.<br><br>
 

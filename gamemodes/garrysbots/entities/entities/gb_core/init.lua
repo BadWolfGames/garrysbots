@@ -34,6 +34,7 @@ function ENT:CheckFlip()
 	return false
 end
 
+
 function ENT:SpawnFunction(ply, tr)
 	if ( !tr.Hit ) then return end
 
@@ -121,8 +122,6 @@ end
 function ENT:Destroy()
 	for k, v in pairs(player.GetAll()) do
 		if v == self.Owner then
-			Announcement({"Your core was destroyed!"}, 5, v)
-		else
 			Announcement({self.Owner:Name().."'s core was destroyed!"}, 5, v)
 		end
 	end

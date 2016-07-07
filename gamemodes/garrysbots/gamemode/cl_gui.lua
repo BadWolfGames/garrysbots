@@ -5,7 +5,7 @@ local BUTTON = {}
 function BUTTON:Init()
 	self.CORNER_SIZE = 10
 
-	self.TEXT_XOFFSET = 3
+	self.TEXT_XOFFSET = 7
 	self.TEXT_YOFFSET = 5
 
 	self.COLOR = Color(128, 128, 128, 255)
@@ -28,6 +28,7 @@ end
 function BUTTON:DoClick()
 	surface.PlaySound( "ui/buttonclick.wav" )
 	LocalPlayer():ConCommand(self.COMMAND)
+	CloseAllMenus()
 end
 
 function BUTTON:Paint()
@@ -86,13 +87,20 @@ F3Menu = vgui.Create( "F3Menu" )
 F2Menu = vgui.Create( "F2Menu" )
 F1Menu = vgui.Create( "F1Menu" )
 
-MOTDWindow = vgui.Create( "MOTDWindow" )
+if !MOTDWindow && !IsValid(MOTDWindow) then
+	MOTDWindow = vgui.Create( "MOTDWindow" )
+end
 AnnouncementWindow = vgui.Create( "Announcement" )
 PostGameWindow = vgui.Create( "PostGameScreen" )
 
 //MENU CONRTOL
 function AllMenusClosed()
 	return (!F1Menu.open && !F2Menu.open && !F3Menu.open && !F4Menu.open)
+end
+
+function CloseAllMenus()
+	F1Menu.open = false F2Menu.open = false F3Menu.open = false F4Menu.open = false
+	gui.EnableScreenClicker(false)
 end
 
 concommand.Add("gb_openf1", function()
@@ -124,7 +132,7 @@ concommand.Add("gb_openf4", function()
 end)
 
 concommand.Add("gb_openmotd", function()
-	MOTD.Window.open = true
+	MOTDWindow.open = true
 end)
 
 net.Receive("gb_announcement", function()
@@ -150,30 +158,38 @@ net.Receive("gb_announcement", function()
 end)
 
 net.Receive("gb_postgame", function()
-	//times
-	for i=1, net.ReadUInt(16) do
-		PostGameWindow.Times[i] = {}
-		PostGameWindow.Times[i][1] = net.ReadEntity()
-		PostGameWindow.Times[i][2] = net.ReadUInt(16)
+	if IsValid(PostGameWindow) then
+		--times
+		for i=1, net.ReadUInt(16) do
+			PostGameWindow.Times[i] = {}
+			PostGameWindow.Times[i][1] = net.ReadEntity()
+			PostGameWindow.Times[i][2] = net.ReadUInt(16)
+		end
+
+		--healths
+		for i=1, net.ReadUInt(16) do
+			PostGameWindow.Healths[i] = {}
+			PostGameWindow.Healths[i][1] = net.ReadEntity()
+			PostGameWindow.Healths[i][2] = net.ReadUInt(16)
+		end
+
+		--damages
+		for i=1, net.ReadUInt(16) do
+			PostGameWindow.Damages[i] = {}
+			PostGameWindow.Damages[i][1] = net.ReadEntity()
+			PostGameWindow.Damages[i][2] = net.ReadUInt(16)
+		end
+
+		PostGameWindow.WinColor = net.ReadColor()
+		PostGameWindow.WinText = net.ReadString()
+
+		PostGameWindow:LoadData()
+		PostGameWindow:SetVisible(true)
+		timer.Simple(25,function()
+			if IsValid(PostGameWindow) then
+				PostGameWindow:SetVisible(false)
+				PostGameWindow:Remove()		
+			end	
+		end)
 	end
-
-	//healths
-	for i=1, net.ReadUInt(16) do
-		PostGameWindow.Healths[i] = {}
-		PostGameWindow.Healths[i][1] = net.ReadEntity()
-		PostGameWindow.Healths[i][2] = net.ReadUInt(16)
-	end
-
-	//damages
-	for i=1, net.ReadUInt(16) do
-		PostGameWindow.Damages[i] = {}
-		PostGameWindow.Damages[i][1] = net.ReadEntity()
-		PostGameWindow.Damages[i][2] = net.ReadUInt(16)
-	end
-
-	PostGameWindow.WinColor = net.ReadColor()
-	PostGameWindow.WinText = net.ReadString()
-
-	PostGameWindow:LoadData()
-	PostGameWindow:SetVisible(true)
 end)

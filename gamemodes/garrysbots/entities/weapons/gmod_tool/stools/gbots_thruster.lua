@@ -1,7 +1,7 @@
 //Thruster with no effects option
 
 TOOL.Category		= "Garry's Bots"
-TOOL.Name		= "#Thruster"
+TOOL.Name			= "Gbots Thruster"
 TOOL.Command		= nil
 TOOL.ConfigName		= ""
 
@@ -11,20 +11,20 @@ TOOL.ClientConVar[ "keygroup" ] = "7"
 TOOL.ClientConVar[ "keygroup_back" ] = "4"
 TOOL.ClientConVar[ "toggle" ] = "0"
 TOOL.ClientConVar[ "collision" ] = "0"
-//TOOL.ClientConVar[ "effect" ] = "fire"
+--TOOL.ClientConVar[ "effect" ] = "fire"
 TOOL.ClientConVar[ "damageable" ] = "0"
 TOOL.ClientConVar[ "sound" ] = "1"
 
 if ( CLIENT ) then
-	language.Add( 'Tool.gbots.thruster.name', 'Thrusters' )
-	language.Add( 'Tool.gbots.thruster.desc', 'Attaches thrusters to stuff.' )
-	language.Add( 'Tool.gbots.thruster.0', 'Left click to attach a thruster to whatever you\'re pointing at.' )
+	language.Add( 'Tool.gbots_thruster.name', 'Gbots Thruster' )
+	language.Add( 'Tool.gbots_thruster.desc', 'Attaches thrusters to stuff.' )
+	language.Add( 'Tool.gbots_thruster.0', 'Left click to attach a thruster to whatever you\'re pointing at.' )
 end
 
 function TOOL:LeftClick( trace )
 	if trace.Entity && trace.Entity:IsPlayer() then return false end
 	
-	// If there's no physics object then we can't constraint it!
+	-- If there's no physics object then we can't constraint it!
 	if ( SERVER && !util.IsValidPhysicsObject( trace.Entity, trace.PhysicsBone ) ) then return false end
 	
 	if (CLIENT) then return true end
@@ -37,12 +37,12 @@ function TOOL:LeftClick( trace )
 	local key_bk 		= self:GetClientNumber( "keygroup_back" ) 
 	local toggle		= self:GetClientNumber( "toggle" ) 
 	local collision		= self:GetClientNumber( "collision" ) 
-	//local effect		= self:GetClientInfo( "effect" ) 
+	--local effect		= self:GetClientInfo( "effect" ) 
 	local effect		= "none"
 	local damageable	= self:GetClientNumber( "damageable" ) 
 	local sound		= self:GetClientNumber( "sound" ) 
 	
-	// If we shot a thruster change its force
+	-- If we shot a thruster change its force
 	if ( trace.Entity:IsValid() && trace.Entity:GetClass() == "gmod_thruster" && trace.Entity.pl == ply ) then
 
 		trace.Entity:SetForce( force )
@@ -73,12 +73,12 @@ function TOOL:LeftClick( trace )
 	
 	local const, nocollide
 	
-	// Don't weld to world
+	-- Dont weld to world
 	if ( trace.Entity:IsValid() ) then
 	
 		const = constraint.Weld( thruster, trace.Entity, 0, trace.PhysicsBone, 0, collision == 0, true )
 		
-		// Don't disable collision if it's not attached to anything
+		-- Dont disable collision if its not attached to anything
 		if ( collision == 0 ) then 
 		
 			thruster:GetPhysicsObject():EnableCollisions( false )
@@ -196,8 +196,8 @@ end
 
 function TOOL.BuildCPanel( CPanel )
 
-	// HEADER
-	CPanel:AddControl( "Header", { Text = "#Tool_thruster_name", Description	= "#Tool_thruster_desc" }  )
+	-- HEADER
+	CPanel:AddControl( "Header", { Text = "Thruster", Description	= "Attaches thrusters to stuff." }  )
 	
 	local Options = { Default = { thruster_force = "20",
 									thruster_model = "models/props_junk/plasticbucket001a.mdl",
@@ -211,13 +211,13 @@ function TOOL.BuildCPanel( CPanel )
 									 Options = Options,
 									 CVars = CVars } )
 
-	CPanel:AddControl( "PropSelect", { Label = "#Thruster_Model",
+	CPanel:AddControl( "PropSelect", { Label = "Thruster Model",
 									 ConVar = "gbots_thruster_model",
 									 Category = "Thrusters",
 									 Models = list.Get( "ThrusterModels" ) } )
 									 
 									 
-	CPanel:AddControl( "Slider", { Label = "#Thruster_force",
+	CPanel:AddControl( "Slider", { Label = "Thrust Force",
 									 Description = "",
 									 Type = "Float",
 									 Min = 1,
@@ -225,23 +225,23 @@ function TOOL.BuildCPanel( CPanel )
 									 Command = "gbots_thruster_force" } )
 									 
 									 
-	CPanel:AddControl( "Numpad", { 	Label = "#Thruster_group",
-									 Label2 = "#Thruster_group_back",
+	CPanel:AddControl( "Numpad", { 	Label = "Forward",
+									 Label2 = "Backward",
 									 Command = "gbots_thruster_keygroup",
 									 Command2 = "gbots_thruster_keygroup_back",
 									 ButtonSize = "22" } )
 									 
-	CPanel:AddControl( "CheckBox", { Label = "#Thruster_toggle",
+	CPanel:AddControl( "CheckBox", { Label = "Toggle Input",
 									 Description = "#Thruster_toggle_desc",
 									 Command = "gbots_thruster_toggle" } )
 									 
-	CPanel:AddControl( "CheckBox", { Label = "#Thruster_collision",
+	CPanel:AddControl( "CheckBox", { Label = "Toggle Collision",
 									 Command = "gbots_thruster_collision" } )
 									 
-	CPanel:AddControl( "CheckBox", { Label = "#Thruster_damageable",
+	CPanel:AddControl( "CheckBox", { Label = "Toggle Damageable",
 									 Command = "gbots_thruster_damageable" } )
 									 
-	CPanel:AddControl( "CheckBox", { Label = "#Sound",
+	CPanel:AddControl( "CheckBox", { Label = "Sound",
 									 Command = "gbots_thruster_sound" } )
 									
 end

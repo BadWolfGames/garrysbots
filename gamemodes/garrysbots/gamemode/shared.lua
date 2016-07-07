@@ -8,24 +8,18 @@ GM.Website = ""
 function GM:Initialize()
 	if SERVER then
 		timer.Create("SyncTime", 7.5, 0, SyncTime)
-
-		//add our resources
-		resource.AddFile( "materials/effects/whiteoverlay.vmt" )
-		resource.AddFile( "materials/sprites/coreglow.vmt" )
-		resource.AddFile( "materials/sprites/coreshrap.vmt" )
-		resource.AddFile( "materials/sprites/coresmoke.vmt" )
 	end
 
-	// Start roundtimer.
+	-- Start roundtimer.
 	gb_RoundTimer = gb_BuildTime
 	timer.Create("RoundTimer", 1, 0, TimerCountdown)
 
-	// TEAMS NEED TO BE SET UP CLIENTSIDE & SERVERSIDE!!
+	-- TEAMS NEED TO BE SET UP CLIENTSIDE & SERVERSIDE!!
 	team.SetUp( 1, "Red Team", Color( 255, 0, 0, 255 ) )
-	team.SetUp( 2, "Blue Team", Color( 0, 0, 255, 255 ) )
+	team.SetUp( 2, "Blue Team", Color( 0, 55, 255, 255 ) )
 end
 
-function UpdateCores() //maintain propper core count
+function UpdateCores() --maintain propper core count
 	gb_NumRedCores = 0
 	gb_NumBlueCores = 0
 	

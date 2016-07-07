@@ -15,12 +15,13 @@ function POSTGAME_WINDOW:Init()
 	self:SetZPos(1)
 	self:SetSize(750, 450)
 	self:SetPos(ScrW()/2 - self:GetWide()/2, ScrH()*0.15)
-	self.WinText = "default"
+	self.WinText = "No contest!"
 	self.WinColor = Color(128, 128, 128, 255)
 	self.Times = {}
 	self.Healths = {}
 	self.Damages = {}
 	self:SetVisible(false)
+
 end
 
 function POSTGAME_WINDOW:LoadData()

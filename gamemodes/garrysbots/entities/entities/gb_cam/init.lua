@@ -29,6 +29,10 @@ function ENT:SpawnFunction( ply, tr )
 	return ent
 end
 
+function ENT:PostEntityPaste(ply,ent,tab)
+	self:Remove()
+end
+
 function ENT:Initialize()
 	self.Entity:SetModel( "models/dav0r/camera.mdl")
 	self.Entity:PhysicsInit(SOLID_VPHYSICS)
@@ -44,5 +48,5 @@ end
 
 
 function ENT:Think()
-	// hm.
+
 end

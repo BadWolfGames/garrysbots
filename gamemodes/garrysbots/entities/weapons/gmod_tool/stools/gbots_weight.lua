@@ -8,14 +8,14 @@ TOOL.ClientConVar[ "offweight" ] = "15"
 TOOL.ClientConVar[ "keygroup" ] = "0"
 
 if ( CLIENT ) then
-	language.Add( 'Tool.gbots.weight.name', 'Toggleable Weights (GBots)' )
-	language.Add( 'Tool.gbots.weight.desc', 'Create toggleable weights attached to something.' )
-	language.Add( 'Tool.gbots.weight.0', 'Click somewhere to attach a toggle weight.' )
+	language.Add( 'Tool.gbots_weight.name', 'Toggle-able Weights' )
+	language.Add( 'Tool.gbots_weight.desc', 'Create toggle-able weights attached to something.' )
+	language.Add( 'Tool.gbots_weight.0', 'Click somewhere to attach a toggle weight.' )
 
-	language.Add( 'Undone.gbots.weight', 'Toggle Weight Undone' )
-	language.Add( 'Cleanup.gbots.weight', 'Toggle Weights' )
-	language.Add( 'Cleaned.gbots.weight', 'Cleaned up all Toggle Weights' )
-	language.Add( 'SBoxLimit.gbots.weights', 'Maximum Toggle Weights Reached' )
+	language.Add( 'Undone.gbots_weight', 'Toggle Weight Undone' )
+	language.Add( 'Cleanup.gbots_weight', 'Toggle Weights' )
+	language.Add( 'Cleaned.gbots_weight', 'Cleaned up all Toggle Weights' )
+	language.Add( 'SBoxLimit.gbots_weights', 'Maximum Toggle Weights Reached' )
 end
 
 function TOOL:LeftClick( trace )
@@ -119,7 +119,7 @@ if (SERVER) then
 
 		numpad.OnDown( pl, key, "Weight_Toggle", weight )
 
-		--pl:AddCount( "gbots_weights", weight )
+		pl:AddCount( "gbots_weights", weight )
 
 		DoPropSpawnedEffect( weight )
 

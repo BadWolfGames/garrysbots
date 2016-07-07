@@ -14,64 +14,64 @@ function PANEL:Init()
 	
 	self.btnMute = vgui.Create( "suispawnmenuadminbutton", self )
 	
-	/*self.btnKick = vgui.Create( "suiplayerkickbutton", self )
+	--[[self.btnKick = vgui.Create( "suiplayerkickbutton", self )
 	self.btnBan = vgui.Create( "suiplayerbanbutton", self )
-	self.btnPBan = vgui.Create( "suiplayerpermbanbutton", self )*/
-	
+	self.btnPBan = vgui.Create( "suiplayerpermbanbutton", self )]]--
+	--[[
 	self.VoteButtons = {}
 
 	self.VoteButtons[5] = vgui.Create( "suispawnmenuvotebutton", self )
-	self.VoteButtons[5]:SetUp( "icon16/wrench.png", "builder", "Good at building!" )
+	self.VoteButtons[5]:SetUp( "icon16/wrench.png", "wrench", "Good Builder!" )
 	
 	self.VoteButtons[4] = vgui.Create( "suispawnmenuvotebutton", self )
-	self.VoteButtons[4]:SetUp( "icon16/star.png", "gold_star", "Wow! Gold star for you!" )
+	self.VoteButtons[4]:SetUp( "icon16/anchor.png", "anchor", "Slow Builder!" )
 
 	self.VoteButtons[3] = vgui.Create( "suispawnmenuvotebutton", self )
-	self.VoteButtons[3]:SetUp( "icon16/palette.png", "artistic", "This player is artistic!" )
+	self.VoteButtons[3]:SetUp( "icon16/palette.png", "palette", "Artistic!" )
 
 	self.VoteButtons[2] = vgui.Create( "suispawnmenuvotebutton", self )
-	self.VoteButtons[2]:SetUp( "icon16/heart.png", "love", "I love this player!" )
+	self.VoteButtons[2]:SetUp( "icon16/information.png", "information", "Informative!" )
 
 	self.VoteButtons[1] = vgui.Create( "suispawnmenuvotebutton", self )
-	self.VoteButtons[1]:SetUp( "icon16/emoticon_smile.png", "smile", "I like this player!" )
+	self.VoteButtons[1]:SetUp( "icon16/group.png", "group", "Team Player!" )
 
 
 	self.VoteButtons[10] = vgui.Create( "suispawnmenuvotebutton", self )
-	self.VoteButtons[10]:SetUp( "gui/corner16", "curvey", "This player is great with curves" )
+	self.VoteButtons[10]:SetUp( "icon16/joystick.png", "joystick", "Great Maneuverability!" )
 
 	self.VoteButtons[9] = vgui.Create( "suispawnmenuvotebutton", self )
-	self.VoteButtons[9]:SetUp( "gui/faceposer_indicator", "best_landvehicle", "This player is awesome with land vehicles" )
+	self.VoteButtons[9]:SetUp( "icon16/asterisk_orange.png", "asterisk_orange", "Great Offense!" )
 
 	self.VoteButtons[8] = vgui.Create( "suispawnmenuvotebutton", self )
-	self.VoteButtons[8]:SetUp( "icon16/arrow_up.png", "best_airvehicle", "This player is awesome with air vehicles" )
+	self.VoteButtons[8]:SetUp( "icon16/shield.png", "shield", "Great Defender!" )
 
 	self.VoteButtons[7] = vgui.Create( "suispawnmenuvotebutton", self )
-	self.VoteButtons[7]:SetUp( "gui/inv_corner16", "stunter", "Wow! you can do amazing Stunts!" )
+	self.VoteButtons[7]:SetUp( "icon16/time.png", "time", "Quick Builder!" )
 
 	self.VoteButtons[6] = vgui.Create( "suispawnmenuvotebutton", self )
-	self.VoteButtons[6]:SetUp( "gui/gmod_logo", "god", "You are my GOD!" )
+	self.VoteButtons[6]:SetUp( "icon16/coins.png", "coins", "Big Spender!" )
 
 	
 	self.VoteButtons[15] = vgui.Create( "suispawnmenuvotebutton", self )
-	self.VoteButtons[15]:SetUp( "icon16/emoticon_smile.png", "lol", "LOL! You are funny!" )
+	self.VoteButtons[15]:SetUp( "icon16/comments.png", "comments", "Talkative!" )
 
 	self.VoteButtons[14] = vgui.Create( "suispawnmenuvotebutton", self )
-	self.VoteButtons[14]:SetUp( "icon16/information.png", "informative", "This player is very informative!" )
+	self.VoteButtons[14]:SetUp( "icon16/bug.png", "bug", "Gross!" )
 	
 	self.VoteButtons[13] = vgui.Create( "suispawnmenuvotebutton", self )
-	self.VoteButtons[13]:SetUp( "icon16/user.png", "friendly", "This player is very friendly!" )
+	self.VoteButtons[13]:SetUp( "icon16/heart.png", "heart", "Friendly!" )
 
 	self.VoteButtons[12] = vgui.Create( "suispawnmenuvotebutton", self )
-	self.VoteButtons[12]:SetUp( "icon16/exclamation.png", "naughty", "This player is naughty!" )
+	self.VoteButtons[12]:SetUp( "icon16/user_gray.png", "user_gray", "Naughty!" )
 	
 	self.VoteButtons[11] = vgui.Create( "suispawnmenuvotebutton", self )
-	self.VoteButtons[11]:SetUp( "gui/gmod_logo", "gay", "This player is GAY!" )
+	self.VoteButtons[11]:SetUp( "icon16/tux.png", "tux", "Stylish!" )]]--
 
 end
 
-/*---------------------------------------------------------
+--[[-------------------------------------------------------
    Name: PerformLayout
----------------------------------------------------------*/
+-------------------------------------------------------]]--
 
 surface.CreateFont( "suiscoreboardcardinfo", {
 	font = "DefaultSmall", 
@@ -112,31 +112,26 @@ end
 ---------------------------------------------------------*/
 function PANEL:UpdatePlayerData()
 	if not IsValid( self.Player ) then return end
+
+	local rank = "Guest"
+	if self.Player:GetUserGroup() == "vip" then
+		rank = "Donator"
+	elseif self.Player:GetUserGroup() == "moderator" then
+		rank = "Moderator"
+	elseif self.Player:GetUserGroup() == "admin" then
+		rank = "Admin"
+	elseif self.Player:GetUserGroup() == "superadmin" then
+		rank = "Super Admin"
+	end
 	
-	self:SetInfo( 1, "Website: ", "N/A")
-	self:SetInfo( 1, "Location: ", "N/A" )
-	self:SetInfo( 1, "Email: ", "N/A" )
-	self:SetInfo( 1, "GTalk: ", "N/A" )
-	self:SetInfo( 1, "MSN: ", "N/A" )
-	self:SetInfo( 1, "AIM: ", "N/A" )
-	self:SetInfo( 1, "XFire: ", "N/A" )
+	self:SetInfo( 1, "  Rank: ", rank)
 	
 	self:SetInfo( 2, "Props:", (self.Player:GetCount( "props" ) or 0 ))
-	self:SetInfo( 2, "HoverBalls:", (self.Player:GetCount( "hoverballs" ) or 0 ))
 	self:SetInfo( 2, "Thrusters:", (self.Player:GetCount( "thrusters" ) or 0 ))
-	self:SetInfo( 2, "Balloons:", (self.Player:GetCount( "balloons" ) or 0))
-	self:SetInfo( 2, "Buttons:", (self.Player:GetCount( "buttons" ) or 0))
-	self:SetInfo( 2, "Dynamite:", (self.Player:GetCount( "dynamite" ) or 0))
+	self:SetInfo( 2, "Wheels:", (self.Player:GetCount( "wheels" ) or 0 ))
+	self:SetInfo( 2, "Weights:", (self.Player:GetCount( "gbots_weights" ) or 0))
 	self:SetInfo( 2, "SENTs:", (self.Player:GetCount( "sents" ) or 0))
 
-	self:SetInfo( 3, "Ragdolls:", (self.Player:GetCount( "ragdolls" ) or 0))
-	self:SetInfo( 3, "Effects:", (self.Player:GetCount( "effects" ) or 0))
-	self:SetInfo( 3, "Vehicles:", (self.Player:GetCount( "vehicles" ) or 0))
-	self:SetInfo( 3, "Npcs:", (self.Player:GetCount( "npcs" ) or 0))
-	self:SetInfo( 3, "Emitters:", (self.Player:GetCount( "emitters" ) or 0))
-	self:SetInfo( 3, "Lamps:", (self.Player:GetCount( "lamps" ) or 0))
-	self:SetInfo( 3, "Spawners:", (self.Player:GetCount( "spawners" ) or 0))
-	
 	if self.Muted == nil or self.Muted ~= self.Player:IsMuted() then
 		self.Muted = self.Player:IsMuted()
 		if self.Muted then
@@ -195,7 +190,7 @@ function PANEL:PerformLayout()
 			RightMost = math.max( RightMost, v.Value.x + v.Value:GetWide() )
 		end
 		
-		//x = RightMost + 10
+		--x = RightMost + 10
 		if(x<100) then
 		x = x + 205
 		else
@@ -211,7 +206,7 @@ function PANEL:PerformLayout()
 		self.btnMute:SetPos( self:GetWide() - 175, 0 )
 	end
 	
-	/*if ( !self.Player  || !self.Player:IsAdmin() || !self.Player == !LocalPlayer() || !LocalPlayer():IsAdmin() ) then 
+	--[[if ( !self.Player  || !self.Player:IsAdmin() || !self.Player == !LocalPlayer() || !LocalPlayer():IsAdmin() ) then 
 		self.btnKick:SetVisible( false )
 		self.btnBan:SetVisible( false )
 		self.btnPBan:SetVisible( false )
@@ -229,8 +224,8 @@ function PANEL:PerformLayout()
 		self.btnPBan:SetPos( self:GetWide() - 175, 85 - (22 * 0) )
 		self.btnPBan:SetSize( 46, 20 )
 	
-	end*/
-	
+	end]]--
+	--[[
 	for k, v in ipairs( self.VoteButtons ) do
 		v:InvalidateLayout()
 		if k < 6 then
@@ -241,7 +236,7 @@ function PANEL:PerformLayout()
 			v:SetPos( self:GetWide() -  (k-10) * 25, 72 )
 		end
 		v:SetSize( 20, 32 )
-	end
+	end]]
 end
 
 function PANEL:Paint(w,h)

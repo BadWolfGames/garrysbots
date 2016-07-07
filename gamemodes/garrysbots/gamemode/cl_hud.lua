@@ -21,7 +21,7 @@ function DrawHUD()
 	//local TOP_BAR_BORDER_COLOR2 = Color(255, 255, 0, 255)
 	local TOP_BAR_BORDER_COLOR2 = team.GetColor(LocalPlayer():Team())
 	local TOP_BAR_TEXT_COLOR = Color(255, 255, 255, 255)
-	local SCORE_BOX_COLOR = TOP_BAR_COLOR //I wouldn't change this...
+	local SCORE_BOX_COLOR = TOP_BAR_COLOR
 
 	local TOP_BAR_FONT = "HudHintTextLarge"
 	local SCORE_BOX_FONT = "HUD_Font"
@@ -85,15 +85,21 @@ function DrawHUD()
 	end
 
 	local spacing = (ScrW()-4) / 5
-	draw.DrawText( "Core Health: "..LocalPlayer():GetVar("gb_corehealth", 0), TOP_BAR_FONT, 2 + (spacing * 0), 2, TOP_BAR_TEXT_COLOR)
-	draw.DrawText( "Time Left: "..string.FormattedTime( gb_RoundTimer, "%02i:%02i"), TOP_BAR_FONT, 2 + (spacing * 0.7), 2, TOP_BAR_TEXT_COLOR)
-	draw.DrawText( "Round: "..round, TOP_BAR_FONT, 2 + (spacing * 4.4), 2, TOP_BAR_TEXT_COLOR)
+	draw.SimpleText( "Core Health: "..LocalPlayer():GetVar("gb_corehealth", 0), TOP_BAR_FONT, 2, 2, TOP_BAR_TEXT_COLOR, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+	
+
+	if gb_RoundTimer > 0 then
+		draw.SimpleText( "Time Left: "..string.FormattedTime( gb_RoundTimer, "%02i:%02i"), TOP_BAR_FONT, ScrW()/2, 2, TOP_BAR_TEXT_COLOR, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+	else
+		draw.SimpleText( "Time Left: Waiting", TOP_BAR_FONT, ScrW()/2, 2, TOP_BAR_TEXT_COLOR, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)		
+	end
+	draw.SimpleText( "Round: "..round, TOP_BAR_FONT, ScrW()-8, 2, TOP_BAR_TEXT_COLOR, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
 
 	//score panel text
 	draw.DrawText( "Cores Remaining", SCORE_BOX_FONT, ScrW()/2 - 82, TOP_BAR_SIZE + TOP_BAR_BORDER_SIZE + 2, Color(255, 255, 255, 255))
 	draw.DrawText( "Red: "..gb_NumRedCores, SCORE_BOX_FONT, ScrW()/2 - 90, TOP_BAR_SIZE + TOP_BAR_BORDER_SIZE + 2 + 27, Color(255, 0, 0, 255))
 	draw.DrawText( "|", SCORE_BOX_FONT, ScrW()/2 - 3, TOP_BAR_SIZE + TOP_BAR_BORDER_SIZE + 2 + 27, Color(0, 0, 0, 255))
-	draw.DrawText( "Blue: "..gb_NumBlueCores, SCORE_BOX_FONT, ScrW()/2 + 20, TOP_BAR_SIZE + TOP_BAR_BORDER_SIZE + 2 + 27, Color(0, 0, 255, 255))
+	draw.DrawText( "Blue: "..gb_NumBlueCores, SCORE_BOX_FONT, ScrW()/2 + 20, TOP_BAR_SIZE + TOP_BAR_BORDER_SIZE + 2 + 27, Color(0, 155, 255, 255))
 
 	//Draw the fuxoring melon owner names.
 	for k, v in pairs(player.GetAll()) do
