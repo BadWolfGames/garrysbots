@@ -14,6 +14,7 @@ Version 1.0.1a by Demonkush
 	-End Round panel now functions properly.
 	-Scoreboard modified.
 	-General code cleanups and fixes.
+	-Disabled 'collide with all' function of No-collide Tool.
 	-Added a few handler variables in config.lua
 
 Version 1.0.0r
